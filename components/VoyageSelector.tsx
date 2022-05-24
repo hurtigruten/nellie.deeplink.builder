@@ -67,7 +67,7 @@ const VoyageSelector = ({
 
       <div className="relative h-[420px] w-[800px]">
         {guessedVoyage && (
-          <div className="flex  absolute w-full top-0 flex-col">
+          <div className="absolute top-0 flex flex-col w-full">
             <hr
               className={clsx(
                 "border-0 self-center bg-black h-0.5 transition-all",
@@ -112,14 +112,20 @@ const VoyageSelector = ({
             setChosenVoyage(voyage);
           }}
           allowEnterFill
-          options={voyages.map((v) => ({
-            id: v.id,
-            label: v.name + ` - (id: ${v.id})`,
-          }))}
+          options={[
+            ...voyages.map((v) => ({
+              id: v.id,
+              label: v.name + ` - (id: ${v.id})`,
+            })),
+            ...voyages.map((v) => ({
+              id: v.id,
+              label: ":" + v.id,
+            })),
+          ]}
         >
           <input
             placeholder="Type voyage name here..."
-            className="p-4 w-full bg-white bg-opacity-90"
+            className="w-full p-4 bg-white bg-opacity-90"
             onChange={(e) => setQuery(e.target.value)}
           />
         </Hint>
