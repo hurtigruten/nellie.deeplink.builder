@@ -6,7 +6,6 @@ import { OverviewVoyage } from "../api/getAllVoyages";
 import { Hint } from "react-autocomplete-hint";
 import { IHintOption } from "react-autocomplete-hint/dist/src/IHintOption";
 import PrimaryButton from "./inputs/PrimaryButton";
-import RadioTagGroup from "./inputs/RadioTagGroup";
 
 const VoyageSelector = ({
   voyages,
@@ -21,7 +20,6 @@ const VoyageSelector = ({
   );
   const [chosenVoyage, setChosenVoyage] = useState<OverviewVoyage | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [departure, setDeparture] = useState("");
   const imageRef = useRef<number>();
 
   useEffect(() => {
@@ -62,10 +60,6 @@ const VoyageSelector = ({
       setGuessedVoyage(voyage);
     }, 500);
   };
-
-  const dateFormatter = new Intl.DateTimeFormat("default", {
-    dateStyle: "medium",
-  });
 
   return (
     <div>
@@ -131,22 +125,6 @@ const VoyageSelector = ({
         </Hint>
       </div>
 
-      <RadioTagGroup
-        isRow
-        onChange={(e) => setDeparture(e.target.value)}
-        value={departure}
-        className={clsx("mb-2 opacity-0", {
-          "opacity-100":
-            imageLoaded && guessedVoyage && guessedVoyage.departures.length > 0,
-        })}
-        name="select-departure"
-        options={
-          guessedVoyage?.departures.map((d) => ({
-            value: d,
-            label: dateFormatter.format(new Date(d)),
-          })) ?? []
-        }
-      />
       {imageLoaded &&
         guessedVoyage &&
         guessedVoyage.departures.length === 0 && (
@@ -157,11 +135,9 @@ const VoyageSelector = ({
 
       <PrimaryButton
         onClick={
-          departure && chosenVoyage
-            ? () => onVoyageSelected(chosenVoyage)
-            : undefined
+          chosenVoyage ? () => onVoyageSelected(chosenVoyage) : undefined
         }
-        isDisabled={!departure || !chosenVoyage}
+        isDisabled={!chosenVoyage}
       >
         Next
       </PrimaryButton>
