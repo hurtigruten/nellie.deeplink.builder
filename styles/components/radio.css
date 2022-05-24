@@ -1,0 +1,22 @@
+.radio + span::after {
+  content: '';
+  position: absolute;
+  display: none;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #d40000;
+}
+
+.radio:focus + span {
+  outline: 2px solid #ffcf3b;
+}
+.radio:checked + span::after {
+  @apply block;
+}
+
+.radioTag:checked + span {
+  @apply bg-black text-white;
+}

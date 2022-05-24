@@ -1,0 +1,7 @@
+.spinner {
+  @apply ease-linear border-t-primary-hrg-red rounded-full border-2 border-t-2 border-transparent animate-spin w-12 h-12 inline-block align-middle;
+}
+
+.btn-spinner {
+  @apply ease-linear border-t-black rounded-full border-2 border-t-2 border-transparent animate-spin w-6 h-6 inline-block align-middle;
+}

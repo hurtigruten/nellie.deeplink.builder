@@ -1,0 +1,63 @@
+.checkbox:checked {
+  & + span > span {
+    @apply bg-primary-hrg-red;
+
+    & > i {
+      @apply block;
+    }
+  }
+
+  & + p.secondary {
+    @apply bg-primary-hrg-red text-white border-transparent;
+  }
+}
+
+.checkbox + p.secondary:focus,
+.checkbox + p.secondary:hover {
+  @apply ring-2 ring-penguin-yellow;
+}
+
+.checkbox + p.secondary:active {
+  @apply bg-flush-red;
+}
+
+.checkbox.dark-mode:checked {
+  & + span > span {
+    @apply bg-white;
+  }
+
+  & > i {
+    @apply block;
+  }
+}
+
+.checkbox:disabled {
+  & + span > span {
+    @apply border-warm-gray-4;
+  }
+
+  &:checked + span > span,
+  & + p.secondary {
+    @apply bg-warm-gray-4;
+  }
+}
+
+.checkbox + span {
+  min-width: 1.75rem;
+}
+
+.checkbox:not([disabled]) {
+  & ~ * {
+    cursor: pointer;
+  }
+
+  &:hover + span:not(.secondary),
+  &:focus + span:not(.secondary),
+  &:active + span {
+    @apply bg-flare-yellow;
+
+    &.secondary {
+      @apply text-black;
+    }
+  }
+}

@@ -1,16 +1,471 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import './components/index.css';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  @font-face {
+    font-family: 'Atlas Grotesk';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/AtlasGrotesk-Regular-Web.woff2') format('woff2'),
+      url('/fonts/AtlasGrotesk-Regular-Web.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Atlas Grotesk';
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/AtlasGrotesk-Medium-Web.woff2') format('woff2'),
+      url('/fonts/AtlasGrotesk-Medium-Web.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Hurtigruten Display';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/HurtigrutenDisplay-CondensedBold.woff2') format('woff2'),
+      url('/fonts/HurtigrutenDisplay-CondensedBold.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Hurtigruten Headline';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/HurtigrutenHeadline-Bold.woff2') format('woff2'),
+      url('/fonts/HurtigrutenHeadline-Bold.woff') format('woff');
+  }
+
+  html,
+  body,
+  #__next {
+    @apply min-h-[100vh] bg-warm-gray-1 ; 
+  }
+
+  #__next {
+    @apply flex flex-col;
+  }
+
+  *:focus,
+  [type='text']:focus,
+  select:focus,
+  [role='button']:focus {
+    @apply outline-penguin-yellow outline-2 outline outline-offset-2 ring-offset-0;
+  }
+
+  select:focus {
+    @apply border-transparent outline-offset-1;
+  }
+
+  h1 {
+    @apply text-5xl font-hrg-headline font-medium text-gray-800;
+  }
+
+  h2 {
+    @apply text-4xl font-hrg-headline font-medium text-gray-800;
+  }
+
+  h3 {
+    @apply text-3xl font-hrg-headline font-bold;
+  }
+
+  h4 {
+    @apply text-2xl font-atlas-grotesk font-medium;
+  }
+
+  h5 {
+    @apply text-base tablet:text-xl font-atlas-grotesk font-medium;
+  }
+
+  h6 {
+    @apply text-lg font-atlas-grotesk font-normal;
+  }
+
+  body {
+    @apply text-base font-normal font-atlas-grotesk relative;
+  }
+
+  p {
+    @apply body-text-2;
+  }
+
+  a,
+  .anchor-styling {
+    @apply text-xs font-medium rounded-lg font-atlas-grotesk hover:underline focus:underline;
+  }
+
+  @screen tablet {
+    h1 {
+      @apply text-6xl;
+    }
+
+    h2 {
+      @apply text-5xl;
+    }
+
+    h3 {
+      @apply text-4xl;
+    }
+
+    h4 {
+      @apply text-2xl;
+    }
+  }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@layer components {
+  .max-w-text {
+    @apply !max-w-3xl;
+  }
 
-* {
-  box-sizing: border-box;
+  .display-text {
+    @apply font-hrg-display text-7xl;
+  }
+
+  .body-text-1 {
+    @apply text-base font-atlas-grotesk;
+  }
+
+  .body-text-2 {
+    @apply text-sm font-atlas-grotesk;
+  }
+
+  .overline-text {
+    @apply text-2xs font-atlas-grotesk uppercase;
+  }
+
+  .support-text {
+    @apply text-xs font-atlas-grotesk leading-4;
+  }
+
+  .caption {
+    @apply text-2xs font-atlas-grotesk font-normal;
+  }
+
+  .lead-text {
+    @apply !h4-text flex flex-col gap-4;
+
+    * {
+      @apply !h4-text;
+    }
+  }
+
+  .ui-text {
+    @apply text-xs font-medium font-atlas-grotesk;
+  }
+
+  .h1-text {
+    @apply text-5xl font-hrg-headline;
+  }
+
+  .h2-text {
+    @apply text-4xl font-hrg-headline;
+  }
+
+  .h3-text {
+    @apply text-3xl font-hrg-headline;
+  }
+
+  .h4-text {
+    @apply text-2xl font-atlas-grotesk font-medium;
+  }
+
+  .h5-text {
+    @apply text-base tablet:text-xl font-atlas-grotesk font-medium;
+  }
+
+  .h6-text {
+    @apply text-lg font-atlas-grotesk font-normal;
+  }
+
+  .border-gray-inset {
+    box-shadow: 0px -2px 0px 0px #f1f3f5 inset;
+  }
+
+  .normalWeight {
+    font-weight: 400 !important;
+  }
+
+  .border-black-inset {
+    box-shadow: 0px -2px 0px 0px #000 inset;
+  }
+
+  a.noDecorate:link,
+  a.noDecorate:hover,
+  a.noDecorate:visited {
+    @apply no-underline;
+  }
+
+  input.no-spinner::-webkit-outer-spin-button,
+  input.no-spinner::-webkit-inner-spin-button,
+  input.no-spinner[type='number'] {
+    @apply appearance-none;
+  }
+
+  .pseudo-element-inset {
+    @apply relative overflow-hidden z-10;
+
+    &::after {
+      @apply absolute h-0.5 -z-1 bottom-0 left-0 right-0;
+      content: '""';
+    }
+    &.primary::after {
+      @apply bg-black;
+    }
+    &.secondary::after {
+      @apply bg-white;
+    }
+  }
+
+  .baseLineCard-hover {
+    &:hover {
+      @apply cursor-pointer drop-shadow-card-hover;
+
+      a.btn.btn-flat {
+        @apply underline;
+      }
+    }
+  }
+
+  .content-card {
+    &:hover {
+      .btn.btn-flat {
+        @apply underline;
+      }
+    }
+  }
+
+  .link-wrapper {
+    @apply flex no-underline hover:no-underline visited:no-underline focus:no-underline;
+  }
+
+  .termsAndConditions {
+    &:hover * {
+      @apply underline;
+    }
+  }
+
+  .cardsInCarousel {
+    width: calc(100% + 3em);
+  }
+
+  .reflect {
+    transform: scaleX(-1);
+    transform-origin: center;
+  }
+
+  .imageContainer > div,
+  .imageContainer > span {
+    @apply align-top;
+  }
+
+  .darkSection {
+    background: linear-gradient(180deg, #1d1d1d 0%, #1d1d1d 22.06%);
+  }
+
+  .unselectable {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+
+  .touch-none {
+    touch-action: none;
+  }
+
+  .imageGalleryLink {
+    &:hover > p {
+      @apply underline;
+    }
+  }
+
+  .heroImage {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.4) 35.22%,
+      rgba(0, 0, 0, 0) 80.29%
+    );
+  }
+
+  .heroGalleryGradient {
+    background-image: linear-gradient(
+      to bottom,
+      rgba(26, 26, 26, 0),
+      rgba(26, 26, 26, 1)
+    );
+  }
+
+  .fullHeightCarouselContainer {
+    & > div {
+      @apply h-full;
+    }
+    & .imageContainer {
+      @apply h-full;
+    }
+  }
+
+  .imageContainerFullWidth {
+    & > span {
+      @apply !w-full;
+    }
+  }
+
+  .carouselGradientRight {
+    background-image: linear-gradient(
+      to right,
+      rgba(26, 26, 26, 0),
+      rgba(26, 26, 26, 1)
+    );
+    z-index: 1000;
+  }
+
+  .voyageDetailsShadowFooter {
+    background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 1)
+    );
+    @apply -z-1;
+    @apply absolute;
+    @apply top-[-50px];
+    @apply right-0;
+    @apply bottom-0;
+    @apply left-0;
+  }
+
+  .richTextContainer {
+    & > ul {
+      @apply list-disc pl-6;
+    }
+  }
+
+  .flex-spacer {
+    @apply grow-9999;
+  }
+
+  .active-tab {
+    transition: background-color 1s cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .practicalInformationContainer {
+    ul {
+      @apply list-disc pl-5 mt-2;
+      p {
+        @apply inline-block align-top;
+      }
+    }
+  }
+
+  .roll-up-max-height {
+    max-height: calc(100% - 3rem);
+  }
+
+  .align-with-fluid-padding {
+    /*
+      Adds a padding that aligns the carousel items with
+      content contained within <Fluid />.
+    */
+    padding-left: max(calc((100% - (1228px - 3rem)) / 2), 1.5rem);
+  }
+
+  .align-with-fluid-padding-right {
+    /*
+      Adds a padding that aligns the carousel items with
+      content contained within <Fluid />.
+    */
+    padding-right: max(calc((100% - (1228px - 3rem)) / 2), 1.5rem);
+  }
+
+  .summary-widget-padding {
+    padding-right: calc(360px + 20px + 24px);
+  }
+
+  .baseline-card-container {
+    & > article {
+      @apply flex-1;
+    }
+  }
+
+  .page-section-title {
+    @apply h3-text mt-8 tablet:mt-20;
+  }
+
+  .fade-out-warm-gray-1:before {
+    @apply w-full h-full absolute left-0 top-0;
+    content: '';
+    background: linear-gradient(transparent 124px, rgba(248, 248, 248));
+  }
+
+  .fade-out:before {
+    @apply w-full h-full absolute left-0 top-0;
+    content: '';
+    background: linear-gradient(transparent 224px, white);
+  }
+
+  .rich-text {
+    ul,
+    ol {
+      list-style: revert;
+      margin: revert;
+      padding: revert;
+    }
+  }
+
+  .split-background {
+    background: inherit;
+  }
+
+  @screen tablet {
+    .split-background {
+      background: linear-gradient(to right, #f1f1f1 50%, white 50%);
+    }
+
+    .align-with-fluid-padding {
+      /*
+        Adds a padding that aligns the carousel items with
+        content contained within <Fluid />.
+      */
+      padding-left: max(calc((100% - (1228px - 5rem)) / 2), 2.5rem);
+    }
+
+    .display-text {
+      @apply text-8xl;
+    }
+
+    .h1-text {
+      @apply text-6xl;
+    }
+
+    .h2-text {
+      @apply text-5xl;
+    }
+
+    .h3-text {
+      @apply text-4xl font-normal;
+    }
+
+    .h4-text {
+      @apply text-2xl;
+    }
+
+    .h5-text {
+      @apply text-xl;
+    }
+
+    .searchbar-destination {
+      flex: 1 2 572px;
+    }
+    .searchbar-duration {
+      flex: 1 0.1 208px;
+    }
+    .searchbar-departure {
+      flex: 1 1.2 399px;
+    }
+  }
 }

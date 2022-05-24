@@ -1,0 +1,158 @@
+.iconBtn {
+  svg {
+    @apply shrink-0 fill-current;
+  }
+
+  &&:disabled {
+    @apply cursor-default;
+  }
+
+  &.fab {
+    @apply bg-white shadow-element-hover;
+
+    svg {
+      @apply text-black fill-current;
+    }
+
+    &:not([disabled]).selected,
+    &:not([disabled]):hover {
+      @apply bg-black;
+      svg {
+        @apply text-white fill-current;
+      }
+    }
+
+    &&:not([disabled]):active {
+      @apply bg-light-black border-black;
+      svg {
+        @apply text-white fill-current;
+      }
+    }
+
+    &:disabled {
+      @apply bg-warm-gray-2;
+      svg {
+        @apply text-warm-gray-3 fill-current;
+      }
+    }
+  }
+
+  &.flat {
+    @apply bg-transparent;
+
+    &.black svg {
+      @apply text-black;
+    }
+
+    &:not([disabled]).selected,
+    &:not([disabled]):hover {
+      @apply bg-white shadow-element-hover;
+      svg {
+        @apply text-black fill-current;
+      }
+    }
+
+    &&:not([disabled]):active {
+      @apply bg-warm-gray-3 shadow-element-hover;
+      svg {
+        @apply text-light-black fill-current;
+      }
+    }
+  }
+}
+
+.btn {
+  @apply rounded-full ui-text box-border flex gap-2 items-center justify-center relative;
+
+  &:disabled {
+    @apply cursor-default;
+  }
+
+  &.btn-flat {
+    @apply border-0 bg-transparent text-black fill-current p-0 rounded-lg !h-7 py-3;
+
+    &&.white {
+      @apply text-white;
+    }
+
+    &:not([disabled]).selected,
+    &:not([disabled]):hover {
+      @apply hover:underline focus:underline active:no-underline;
+    }
+
+    &:disabled {
+      @apply !text-warm-gray-4;
+    }
+
+    & > .btn-spinner {
+      @apply border-t-black;
+    }
+  }
+
+  &.btn-primary {
+    @apply text-white fill-current bg-primary-hrg-red border-primary-hrg-red border-2 min-w-button max-h-button px-4 rounded-full;
+
+    &:not([disabled]).selected,
+    &:not([disabled]):hover {
+      @apply fill-current bg-flush-red shadow-element-hover;
+    }
+
+    & > .btn-spinner {
+      @apply border-t-white;
+    }
+
+    &:disabled {
+      @apply text-primary-red-200 fill-current bg-light-hrg-red border-transparent;
+
+      & > .btn-spinner {
+        @apply border-t-primary-red-200;
+      }
+    }
+  }
+
+  &.btn-menu-link {
+    @apply text-white fill-current bg-black border-black border-2 min-w-button max-h-button;
+
+    &:not([disabled]).selected,
+    &:not([disabled]):active {
+      @apply text-penguin-yellow fill-current border-black;
+    }
+
+    & > .btn-spinner {
+      @apply border-t-white;
+    }
+  }
+
+  &.btn-secondary {
+    @apply border-2 min-w-button max-h-button border-transparent;
+
+    &:not([disabled]).selected,
+    &:not([disabled]):hover {
+      @apply shadow-element-hover fill-current;
+    }
+
+    &:not([disabled]).selected,
+    &:not([disabled]):hover,
+    &&:not(:disabled):active {
+      @apply fill-current border-2;
+
+      & > .btn-spinner {
+        @apply border-t-white;
+      }
+    }
+
+    & > .btn-spinner {
+      @apply border-t-black;
+    }
+  }
+}
+
+.button-shadow {
+  @apply h-[110px] -z-1;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    #ffffff 51.56%
+  );
+  top: -100px;
+}
