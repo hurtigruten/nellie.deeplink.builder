@@ -21,10 +21,15 @@ const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
     return <h2>No deeplink supplied.</h2>;
   }
 
+  const baseUrl = "http://localhost:3000/expeditions/dl/";
+
   return (
     <div className="w-[400px]">
       <h2 className="max-w-[400px] mb-4">Your deeplink is:</h2>
-      <p className="break-words">{encodedLink}</p>
+      <p className="break-words">
+        {baseUrl}
+        {encodedLink}
+      </p>
     </div>
   );
 };
