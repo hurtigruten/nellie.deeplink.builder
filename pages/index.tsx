@@ -69,7 +69,7 @@ const Home = () => {
         voyageId: deeplink?.search?.voyageId ?? "",
         cabins: passengers.map((p) => [p.adults, p.children, p.infants]),
         promoCode: departure.promotionCodesApplied.join(","),
-        departure: departure.voyageId,
+        departure: departure.date.toUTCString(),
       },
     });
 
@@ -118,10 +118,10 @@ const Home = () => {
 
   return (
     <>
-      <header className="bg-off-black mb-20 flex justify-center items-center p-6 py-14">
-        <h1 className=" text-white display-text uppercase">Create deeplink</h1>
+      <header className="flex items-center justify-center p-6 mb-20 bg-off-black py-14">
+        <h1 className="text-white uppercase display-text">Create deeplink</h1>
       </header>
-      <main className="min-h-[1500px] overflow-hidden w-full flex relative flex-col items-center">
+      <main className="min-h-[2500px] overflow-hidden w-full flex relative flex-col items-center">
         <div
           className={clsx("-translate-x-1/2 absolute", {
             "transition-all duration-1000 ease-in-out": !replaceStep,
