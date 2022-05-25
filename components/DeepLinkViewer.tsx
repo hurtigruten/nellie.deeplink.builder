@@ -17,6 +17,7 @@ const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
     getEncodedLink().then((link) => setEncodedLink(link));
   }, [deeplink]);
 
+  console.log(deeplink);
   if (!deeplink) {
     return <h2>No deeplink supplied.</h2>;
   }
@@ -25,10 +26,10 @@ const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
 
   return (
     <div className="w-[400px]">
-      <h2 className="max-w-[400px] mb-4">Your deeplink is:</h2>
+      <h2 className="max-w-[400px] mb-4">Your deeplink</h2>
       <p className="break-words">
-        {baseUrl}
-        {encodedLink}
+        Click <a href={`${baseUrl}${encodedLink}`}>here</a> to access your
+        deeplink.
       </p>
     </div>
   );

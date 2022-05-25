@@ -69,7 +69,7 @@ const Home = () => {
         voyageId: deeplink?.search?.voyageId ?? "",
         cabins: passengers.map((p) => [p.adults, p.children, p.infants]),
         promoCode: departure.promotionCodesApplied.join(","),
-        departure: departure.date.toUTCString(),
+        departure: departure.date.toISOString().substring(0, 19),
       },
     });
 
