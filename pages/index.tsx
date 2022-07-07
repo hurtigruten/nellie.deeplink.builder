@@ -1,35 +1,40 @@
 import { useState } from "react";
 import { OverviewVoyage } from "../api/getAllVoyages";
-import LocaleSelector from "../components/LocaleSelector";
 import clsx from "clsx";
-import VoyageSelector from "../components/VoyageSelector";
-import DeepLinkViewer from "../components/DeepLinkViewer";
-import CheckAvailability from "../components/CheckAvailability";
-import { mapContentfulLanguageToLocale } from "../util/mappers";
-
-enum DeepLinkStep {
-  LOCALE = 1,
-  VOYAGE,
-  AVAILABILITY,
-  CABIN,
-  VIEW_DEEPLINK,
-}
+import DeepLinkViewer from "../components/deeplink/DeepLinkViewer";
+import {
+  mapContentfulLanguageToLocale,
+  mapLocaleToContenfulFormat,
+} from "../util/mappers";
+import AddButton from "../components/inputs/AddButton";
+import {
+  Deeplink,
+  DeeplinkSearchCabin,
+  encodeDeeplink,
+} from "../util/deeplink";
+import VoyageSelector from "../components/deeplink/VoyageSelector";
+import LocaleSelector from "../components/deeplink/LocaleSelector";
+import DepartureOptions, {
+  TSelectedDeparture,
+} from "../components/deeplink/DepartureOptions";
+import CabinOptions from "../components/deeplink/CabinOptions";
+import Button, { ButtonModes } from "../components/inputs/Button";
+import IconButton from "../components/IconButton";
 
 const defaultDeepLink: Deeplink = {
   version: "1",
-  locale: "en",
+  locale: null,
   userId: null,
   search: null,
   total: null,
 };
 
-const Home = () => {
-  const [deeplink, setDeeplink] = useState<Deeplink | null>(null);
-  const [currentStep, setCurrentStep] = useState(DeepLinkStep.LOCALE);
-  const [nextStep, setNextStep] = useState<null | DeepLinkStep>(null);
-  const [replaceStep, setReplaceStep] = useState(false);
+const DeepLinkBuilder = () => {
+  const [deeplink, setDeeplink] = useState<Deeplink>(defaultDeepLink);
   const [voyages, setVoyages] = useState<OverviewVoyage[]>([]);
   const [chosenVoyage, setChosenVoyage] = useState<OverviewVoyage | null>(null);
+  const [chosenDeparture, setChosenDeparture] =
+    useState<TSelectedDeparture | null>(null);
 
   const onLocaleSelected = (locale: string) => {
     setDeeplink({
@@ -37,130 +42,94 @@ const Home = () => {
       locale: mapContentfulLanguageToLocale(locale as TContentfulLanguage),
       userId: null,
       search: null,
+      cabins: undefined,
       total: null,
     });
-
-    setNextStep(DeepLinkStep.VOYAGE);
   };
 
   const onVoyageSelected = (voyage: OverviewVoyage) => {
     setChosenVoyage(voyage);
-    setDeeplink({
-      ...(deeplink ?? defaultDeepLink),
-      search: {
-        voyageId: voyage.id,
-        cabins: [],
-        promoCode: null,
-        departure: null,
-      },
-    });
-
-    setNextStep(DeepLinkStep.AVAILABILITY);
   };
 
-  const onDepartureSelected = (
-    departure: TDeparture,
-    passengers: TCabinPassengerCount[]
-  ) => {
-    console.log(departure, passengers);
+  const onCabinsSelected = (cabinGrades: string[]) => {
+    const cabins =
+      cabinGrades.length === 0
+        ? undefined
+        : cabinGrades.map((cg) => ({
+            cabinGradeCode: cg,
+            cabinNumber: null,
+          }));
+
     setDeeplink({
-      ...(deeplink ?? defaultDeepLink),
+      ...deeplink,
+      cabins,
+    });
+  };
+
+  const onDepartureSelected = (selectedDep: TSelectedDeparture | null) => {
+    console.log("quoteId", selectedDep?.departure.quoteId);
+    console.log("voyageId", selectedDep?.departure.voyageId);
+
+    const promoCode =
+      selectedDep?.departure.promotionCodesApplied.join(",") ?? null;
+    const departure =
+      selectedDep?.departure.date.toISOString().substring(0, 19) ?? null;
+    const cabins: DeeplinkSearchCabin[] =
+      selectedDep?.passengers.map((p) => [p.adults, p.children, p.infants]) ??
+      [];
+
+    setChosenDeparture(selectedDep);
+    setDeeplink({
+      ...deeplink,
       search: {
         voyageId: deeplink?.search?.voyageId ?? "",
-        cabins: passengers.map((p) => [p.adults, p.children, p.infants]),
-        promoCode: departure.promotionCodesApplied.join(","),
-        departure: departure.date.toISOString().substring(0, 19),
+        cabins,
+        promoCode,
+        departure,
       },
     });
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setNextStep(DeepLinkStep.VIEW_DEEPLINK);
   };
-
-  const renderStepContent = (step: DeepLinkStep) => {
-    switch (step) {
-      case DeepLinkStep.LOCALE:
-        return (
-          <LocaleSelector
-            onVoyagesLoaded={setVoyages}
-            onLocaleSelected={onLocaleSelected}
-          />
-        );
-      case DeepLinkStep.VOYAGE:
-        return (
-          <VoyageSelector
-            voyages={voyages}
-            onVoyageSelected={onVoyageSelected}
-          />
-        );
-      case DeepLinkStep.AVAILABILITY:
-        return (
-          <CheckAvailability
-            voyageId={chosenVoyage?.id ?? ""}
-            onSubmit={onDepartureSelected}
-            packageCodes={chosenVoyage?.packageCodes ?? []}
-            locale={mapContentfulLanguageToLocale(
-              deeplink?.locale as TLanguageLocaleCode
-            )}
-          />
-        );
-      case DeepLinkStep.VIEW_DEEPLINK:
-        return <DeepLinkViewer deeplink={deeplink} />;
-
-      default:
-        return null;
-    }
-  };
-
-  if (replaceStep) {
-    window.requestAnimationFrame(() => setReplaceStep(false));
-  }
 
   return (
     <>
       <header className="flex items-center justify-center p-6 mb-20 bg-off-black py-14">
         <h1 className="text-white uppercase display-text">Create deeplink</h1>
       </header>
-      <main className="min-h-[2500px] overflow-hidden w-full flex relative flex-col items-center">
-        <div
-          className={clsx("-translate-x-1/2 absolute", {
-            "transition-all duration-1000 ease-in-out": !replaceStep,
-            "-left-1/2": !!nextStep && !replaceStep,
-            "left-1/2": !nextStep,
-          })}
-        >
-          {renderStepContent(currentStep)}
-        </div>
-
-        <div
-          onTransitionEnd={() => {
-            if (!nextStep) {
-              return;
-            }
-            console.log(nextStep);
-            setReplaceStep(true);
-
-            window.requestAnimationFrame(() => {
-              setCurrentStep(nextStep);
-              setNextStep(null);
-            });
-          }}
-          className={clsx(
-            "transition-all ease-in-out -translate-x-1/2 absolute duration-1000",
-            {
-              "left-[150%] opacity-0": !nextStep,
-              "left-1/2": !!nextStep,
-            }
+      <main className="relative flex flex-col w-full pl-20 overflow-hidden gap-y-5">
+        <LocaleSelector onLocaleSelected={onLocaleSelected} />
+        {deeplink?.locale && (
+          <div>
+            <VoyageSelector
+              onVoyageSelected={onVoyageSelected}
+              locale={deeplink.locale}
+            />
+          </div>
+        )}
+        <div className="flex gap-2">
+          {deeplink.locale && chosenVoyage && (
+            <div className="flex flex-wrap gap-4">
+              <DepartureOptions
+                locale={deeplink.locale}
+                voyage={chosenVoyage}
+                onDepartureSelected={onDepartureSelected}
+              />
+              <CabinOptions
+                locale={deeplink.locale}
+                departure={chosenDeparture}
+                onCabinsSelected={onCabinsSelected}
+              />
+            </div>
           )}
-        >
-          {nextStep && renderStepContent(nextStep)}
         </div>
+        {(deeplink.search || deeplink.cabins) && (
+          <DeepLinkViewer deeplink={deeplink} />
+        )}
       </main>
     </>
   );
 };
 
-export default Home;
+export default DeepLinkBuilder;
 
 export const getStaticProps = async () => {
   return { props: {} };

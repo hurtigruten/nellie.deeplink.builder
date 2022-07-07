@@ -8,10 +8,10 @@ import {
 } from "react";
 import clsx from "clsx";
 
-import Notification from "./Notification";
-import dateToString from "../util/dateToString";
-import { notEmpty } from "../util/notEmpty";
-import formatPrice from "../util/formatPrice";
+import Notification from "../Notification";
+import dateToString from "../../util/dateToString";
+import { notEmpty } from "../../util/notEmpty";
+import formatPrice from "../../util/formatPrice";
 
 const AvailabilityResults = forwardRef(
   (

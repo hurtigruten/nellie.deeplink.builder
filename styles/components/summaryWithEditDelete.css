@@ -1,0 +1,7 @@
+.summaryWithEditDelete button:first-of-type:hover ~ div {
+  @apply pl-8;
+}
+
+.summaryWithEditDelete button:last-of-type:hover ~ div {
+  @apply pr-8;
+}

@@ -1,15 +1,15 @@
-import { useEffect, useState, useRef, useMemo } from "react";
-import createDateAsUTC from "../util/createDateAsUTC";
-import { mapLocaleToCurrency, mapLocaleToMarket } from "../util/mappers";
-import { toDeparture } from "../util/toDeparture";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import createDateAsUTC from "../../util/createDateAsUTC";
+import { mapLocaleToCurrency, mapLocaleToMarket } from "../../util/mappers";
+import { toDeparture } from "../../util/toDeparture";
+import CabinChooser from "../inputs/CabinChooser";
+import Checkbox from "../inputs/Checkbox";
+import IncrementableInput from "../inputs/IncrementableInput";
+import Label from "../inputs/Label";
+import TextInput from "../inputs/TextInput";
 import AvailabilityResults from "./AvailabilityResults";
 import ConfirmDeparture from "./ConfirmDeparture";
 import ConfirmGuests from "./ConfirmGuests";
-import CabinChooser from "./inputs/CabinChooser";
-import Checkbox from "./inputs/Checkbox";
-import IncrementableInput from "./inputs/IncrementableInput";
-import Label from "./inputs/Label";
-import TextInput from "./inputs/TextInput";
 
 type TFetchStatus = {
   status: "NOTSTARTED" | "SUCCESS" | "LOADING" | "ERROR";
@@ -79,57 +79,72 @@ const CheckAvailability = ({
     }
   }, [numberOfCabins, passengers]);
 
-  const getAvailability = async (
-    cabins: TCabinPassengerCount[],
-    cancellationToken: number
-  ) => {
-    setStatus({ status: "LOADING", message: "Getting available expeditions" });
-    setSelectedDeparture(null);
-    const body: Record<string, unknown> = {
-      voyages: packageCodes,
-      voyageSysId: voyageId,
-      cabins,
-      market: mapLocaleToMarket(locale),
-      currency: mapLocaleToCurrency(locale),
-    };
-    if (automaticPromotionCode) {
-      body.promotionCode = automaticPromotionCode;
-    } else if (showPromotionCodeField && promotionCode) {
-      body.promotionCode = promotionCode;
-    }
-    try {
-      const response = await fetch("/api/booking-domain/search/availability/", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
+  const getAvailability = useCallback(
+    async (cabins: TCabinPassengerCount[], cancellationToken: number) => {
+      setStatus({
+        status: "LOADING",
+        message: "Getting available expeditions",
       });
-      const data = await response.json();
-
-      if (cancellationRef.current === cancellationToken) {
-        const voyagesWithAvailability = data as TAvailabilityResult[];
-        const voyagesSortedByStartDate = voyagesWithAvailability.sort(
-          (a, b) =>
-            createDateAsUTC(a.departureDate).getTime() -
-            createDateAsUTC(b.departureDate).getTime()
-        );
-
-        const departures = voyagesSortedByStartDate.map((x) => toDeparture(x));
-        setDepartureDates(departures);
-
-        setStatus({ status: "SUCCESS", message: undefined });
+      setSelectedDeparture(null);
+      const body: Record<string, unknown> = {
+        voyages: packageCodes,
+        voyageSysId: voyageId,
+        cabins,
+        market: mapLocaleToMarket(locale),
+        currency: mapLocaleToCurrency(locale),
+      };
+      if (automaticPromotionCode) {
+        body.promotionCode = automaticPromotionCode;
+      } else if (showPromotionCodeField && promotionCode) {
+        body.promotionCode = promotionCode;
       }
-    } catch (e) {
-      if (cancellationRef.current === cancellationToken) {
-        if (typeof e === "string") {
-          setStatus({ status: "ERROR", message: e });
-        } else {
-          setStatus({ status: "ERROR", message: "Something went wrong" });
+      try {
+        const response = await fetch(
+          "/api/booking-domain/search/availability/",
+          {
+            method: "POST", // or 'PUT'
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          }
+        );
+        const data = await response.json();
+
+        if (cancellationRef.current === cancellationToken) {
+          const voyagesWithAvailability = data as TAvailabilityResult[];
+          const voyagesSortedByStartDate = voyagesWithAvailability.sort(
+            (a, b) =>
+              createDateAsUTC(a.departureDate).getTime() -
+              createDateAsUTC(b.departureDate).getTime()
+          );
+
+          const departures = voyagesSortedByStartDate.map((x) =>
+            toDeparture(x)
+          );
+          setDepartureDates(departures);
+
+          setStatus({ status: "SUCCESS", message: undefined });
+        }
+      } catch (e) {
+        if (cancellationRef.current === cancellationToken) {
+          if (typeof e === "string") {
+            setStatus({ status: "ERROR", message: e });
+          } else {
+            setStatus({ status: "ERROR", message: "Something went wrong" });
+          }
         }
       }
-    }
-  };
+    },
+    [
+      automaticPromotionCode,
+      locale,
+      packageCodes,
+      promotionCode,
+      showPromotionCodeField,
+      voyageId,
+    ]
+  );
 
   const isAvailableDepartures = Boolean(
     status.status === "SUCCESS" && departureDates && departureDates.length > 0
@@ -163,7 +178,7 @@ const CheckAvailability = ({
       cancellationRef.current = Date.now();
       setStatus({ status: "NOTSTARTED" });
     }
-  }, [fetchData]);
+  }, [fetchData, getAvailability, passengers]);
 
   const [isLoadingAutomaticOfferCode, setIsLoadingAutomaticOfferCode] =
     useState(true);
@@ -188,7 +203,7 @@ const CheckAvailability = ({
     <>
       <form
         data-testid="checkAvailabilityForm"
-        className="w-full flex flex-col pb-6 text-black"
+        className="flex flex-col w-full pb-6 text-black"
       >
         <h3 className="px-6 mb-4 tablet:block">Departure options</h3>
         <p className="px-6 mb-6 text-light-black tablet:block">

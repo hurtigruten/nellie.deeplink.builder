@@ -1,5 +1,5 @@
-import formatPrice from "../util/formatPrice";
-import PrimaryButton from "./inputs/PrimaryButton";
+import formatPrice from "../../util/formatPrice";
+import PrimaryButton from "../inputs/PrimaryButton";
 
 const RenderSelectedDeparture = ({
   selectedDeparture,

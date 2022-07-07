@@ -65,7 +65,6 @@ export const getAllVoyages = async (locale: string) => {
     environment: process.env.CONTENTFUL_GLOBAL_ENVIRONMENT,
   });
 
-  console.log("FETCIN FOR LOCALE", locale);
   const voyages = await client.getEntries<ContentfulOverviewVoyage>({
     content_type: "voyage",
     "fields.bookable": true,

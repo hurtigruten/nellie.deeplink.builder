@@ -43,7 +43,7 @@ const IconButton = forwardRef<HTMLButtonElement, TIconButtonProps>(
       transparentDark: "text-white group-hover:text-black hover:text-black",
     };
     const classes = clsx(
-      "group iconBtn rounded-full flex items-center justify-center max-h-10",
+      "group flex-shrink-0 iconBtn rounded-full flex items-center justify-center max-h-10",
       {
         "bg-white hover:bg-black": buttonColor === "white",
         "bg-warm-gray-3 hover:bg-black": buttonColor === "gray",

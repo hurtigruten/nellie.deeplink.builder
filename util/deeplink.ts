@@ -1,3 +1,31 @@
+export type DeeplinkSearchCabin = [number, number, number];
+
+export interface DeeplinkSearch {
+  voyageId: string;
+  cabins: DeeplinkSearchCabin[];
+  promoCode: string | null;
+  departure: string | null;
+}
+
+export interface DeepLinkCabin {
+  cabinGradeCode: string;
+  cabinNumber: number | null;
+}
+
+interface DeeplinkCabinCompressed {
+  c: string;
+  n: number | null;
+}
+
+export interface Deeplink {
+  version: "1";
+  locale: TLocale | null;
+  userId?: string | null;
+  search: DeeplinkSearch | null;
+  cabins?: DeepLinkCabin[];
+  total: number | null;
+}
+
 interface DeeplinkSearchCompressed {
   v: string;
   c: [number, number, number][];
@@ -7,9 +35,10 @@ interface DeeplinkSearchCompressed {
 
 interface DeeplinkCompressed {
   v: "1";
-  l: string;
+  l: TLocale | null;
   u?: string | null;
   s: DeeplinkSearchCompressed | null;
+  c?: DeeplinkCabinCompressed[];
   t: number | null;
 }
 
@@ -29,11 +58,22 @@ const decompressSearch = (
   departure: search.d,
 });
 
+const compressCabin = (cabin: DeepLinkCabin): DeeplinkCabinCompressed => ({
+  c: cabin.cabinGradeCode,
+  n: cabin.cabinNumber,
+});
+
+const decompressCabin = (cabin: DeeplinkCabinCompressed): DeepLinkCabin => ({
+  cabinGradeCode: cabin.c,
+  cabinNumber: cabin.n,
+});
+
 const compressDeeplink = (deeplink: Deeplink): DeeplinkCompressed => ({
   v: deeplink.version,
   l: deeplink.locale,
   u: deeplink.userId,
-  s: deeplink.search ? compressSearch(deeplink.search) : null,
+  s: deeplink.search && compressSearch(deeplink.search),
+  c: deeplink.cabins && deeplink.cabins.map((c) => c && compressCabin(c)),
   t: deeplink.total,
 });
 
@@ -41,7 +81,8 @@ const decompressDeeplink = (deeplink: DeeplinkCompressed): Deeplink => ({
   version: deeplink.v,
   locale: deeplink.l,
   userId: deeplink.u,
-  search: deeplink.s ? decompressSearch(deeplink.s) : null,
+  search: deeplink.s && decompressSearch(deeplink.s),
+  cabins: deeplink.c && deeplink.c.map((c) => c && decompressCabin(c)),
   total: deeplink.t,
 });
 

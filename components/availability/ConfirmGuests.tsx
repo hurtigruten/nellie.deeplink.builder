@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PrimaryButton from "./inputs/PrimaryButton";
+import PrimaryButton from "../inputs/PrimaryButton";
 
 const ConfirmGuests = ({
   searchForAvailability,

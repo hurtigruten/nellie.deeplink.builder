@@ -2,32 +2,59 @@ import Image from "next/image";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 
-import { OverviewVoyage } from "../api/getAllVoyages";
 import { Hint } from "react-autocomplete-hint";
 import { IHintOption } from "react-autocomplete-hint/dist/src/IHintOption";
-import PrimaryButton from "./inputs/PrimaryButton";
+import { OverviewVoyage } from "../../api/getAllVoyages";
+import { mapLocaleToContenfulFormat } from "../../util/mappers";
+import { Status } from "../../constants/status";
 
 const VoyageSelector = ({
-  voyages,
+  locale,
   onVoyageSelected,
 }: {
-  voyages: OverviewVoyage[];
+  locale: TLocale;
   onVoyageSelected: (voyage: OverviewVoyage) => void;
 }) => {
+  const [status, setStatus] = useState(Status.NOT_STARTED);
+  const [voyages, setVoyages] = useState<OverviewVoyage[]>([]);
   const [query, setQuery] = useState("");
   const [guessedVoyage, setGuessedVoyage] = useState<OverviewVoyage | null>(
     null
   );
-  const [chosenVoyage, setChosenVoyage] = useState<OverviewVoyage | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const imageRef = useRef<number>();
 
   useEffect(() => {
     if (!query) {
       setImageLoaded(false);
-      setChosenVoyage(null);
     }
   }, [query]);
+
+  useEffect(() => {
+    const loadVoyages = async () => {
+      setStatus(Status.LOADING);
+
+      try {
+        const res = await fetch(
+          "/api/getAllVoyages?locale=" +
+            mapLocaleToContenfulFormat(locale ?? "en-au")
+        );
+        const voyages_: OverviewVoyage[] = await res.json();
+
+        setVoyages(voyages_);
+        setStatus(Status.LOADING_SUCCESS);
+      } catch {
+        setStatus(Status.LOADING_FAILED);
+        alert("Hmm.. bad things have happened.");
+      }
+    };
+
+    if (!locale) {
+      setVoyages([]);
+    } else {
+      void loadVoyages();
+    }
+  }, [locale]);
 
   const setGuessedVoyage_ = (hint: IHintOption) => {
     if (!hint && query && guessedVoyage) {
@@ -61,9 +88,33 @@ const VoyageSelector = ({
     }, 500);
   };
 
+  const onHintFill = (h: IHintOption) => {
+    const voyage = voyages.find((v) => v.id === h.id.toString()) ?? null;
+    if (voyage) {
+      onVoyageSelected(voyage);
+    }
+  };
+
+  const hintOptions = [
+    ...voyages.map((v) => ({
+      id: v.id,
+      label: v.name + ` - (id: ${v.id})`,
+    })),
+    ...voyages.map((v) => ({
+      id: v.id,
+      label: ":" + v.id,
+    })),
+  ];
+
   return (
-    <div>
-      <h1 className="mb-4">Select a voyage</h1>
+    <div
+      className={clsx("transition-opacity duration-500", {
+        "pointer-events-none bg-warm-gray-2 opacity-50":
+          status !== Status.LOADING_SUCCESS,
+        "opacity-100 bg-transparent": status === Status.LOADING_SUCCESS,
+      })}
+    >
+      <h2 className="mb-4">Select a voyage</h2>
 
       <div className="relative h-[420px] w-[800px]">
         {guessedVoyage && (
@@ -87,8 +138,11 @@ const VoyageSelector = ({
               )}
             >
               <Image
-                onLoad={() => requestAnimationFrame(() => setImageLoaded(true))}
                 layout="fill"
+                onLoadingComplete={() => {
+                  console.log("imageloaded");
+                  setImageLoaded(true);
+                }}
                 src={guessedVoyage.imageUrl}
                 alt={guessedVoyage.imageAlt}
               />
@@ -106,22 +160,18 @@ const VoyageSelector = ({
         )}
         <Hint
           onHint={setGuessedVoyage_}
-          onFill={(h: IHintOption) => {
-            const voyage =
-              voyages.find((v) => v.id === h.id.toString()) ?? null;
-            setChosenVoyage(voyage);
+          onFill={(h) => {
+            if (typeof h === "undefined" || typeof h === "string") {
+              throw new Error("Unexpected hint type received");
+              return;
+            }
+
+            onHintFill(h);
+            setGuessedVoyage_(h);
           }}
           allowEnterFill
-          options={[
-            ...voyages.map((v) => ({
-              id: v.id,
-              label: v.name + ` - (id: ${v.id})`,
-            })),
-            ...voyages.map((v) => ({
-              id: v.id,
-              label: ":" + v.id,
-            })),
-          ]}
+          allowTabFill
+          options={hintOptions}
         >
           <input
             placeholder="Type voyage name here..."
@@ -138,15 +188,6 @@ const VoyageSelector = ({
             Unfortunately, this voyage has no availability. Please try another.
           </h4>
         )}
-
-      <PrimaryButton
-        onClick={
-          chosenVoyage ? () => onVoyageSelected(chosenVoyage) : undefined
-        }
-        isDisabled={!chosenVoyage}
-      >
-        Next
-      </PrimaryButton>
     </div>
   );
 };

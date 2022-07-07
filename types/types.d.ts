@@ -9,21 +9,6 @@ declare global {
   type TContentfulLanguage = "en-AU" | "en-GB" | "en-US";
   type TLanguageLocaleCode = "en-AU" | "en-GB" | "en-US";
 
-  interface DeeplinkSearch {
-    voyageId: string;
-    cabins: [number, number, number][];
-    promoCode: string | null;
-    departure: string | null;
-  }
-
-  interface Deeplink {
-    version: "1";
-    locale: string;
-    userId?: string | null;
-    search: DeeplinkSearch | null;
-    total: number | null;
-  }
-
   type TAvailabilityResult = {
     quoteId: string;
     departureDate: string;
@@ -66,6 +51,15 @@ declare global {
     testId?: string;
     isLoading?: boolean;
   }
+
+  export type TResponseWithErrorState<T> = {
+    data?: T;
+    expired: boolean;
+    error: boolean;
+    errorMessage?: string;
+  };
+
+  type TVoidFunc = () => void;
 
   type TButtonSize = "large" | "small" | "full-icon";
 

@@ -74,7 +74,7 @@ const PrimaryButton = forwardRef(
           </span>
         )}
         <span
-          className={clsx("flex flex-row gap-2", {
+          className={clsx("flex flex-row items-center h-full gap-2", {
             "opacity-0": isLoading,
           })}
         >
