@@ -1,52 +1,5 @@
 import { createClient } from "contentful";
 
-type ContentfulOverviewVoyage = {
-  id: string;
-  slug: string;
-  name: string;
-  bookingCode: string[];
-  availability: {
-    fields: {
-      availabilityData: {
-        voyages: [
-          {
-            date: string;
-            price: number;
-            packageCode: string;
-            strikethroughPrice: number;
-            cabinsWithPromotions: any[];
-          }
-        ];
-        duration: 13;
-      };
-    };
-  };
-  highlightedImage: {
-    fields: {
-      image: {
-        fields: {
-          file: {
-            url: string;
-          };
-          title: string;
-        };
-      };
-    };
-  };
-};
-
-export type OverviewVoyage = {
-  id: string;
-  slug: string;
-  name: string;
-  imageUrl: string;
-  imageAlt: string;
-  departures: string[];
-  packageCodes: string[];
-};
-
-export type Availability = {};
-
 const transformImage = (src: string) => {
   const parts = src.split("?");
   let out = "http:" + parts[0];
@@ -57,7 +10,9 @@ const transformImage = (src: string) => {
   return out;
 };
 
-export const getAllVoyages = async (locale: string) => {
+export const getVoyagesFromContentful = async (
+  locale: string
+): Promise<Contentful.Voyage.Overview[]> => {
   const client = createClient({
     space: process.env.CONTENTFUL_GLOBAL_SPACE_ID ?? "",
     accessToken: process.env.CONTENTFUL_GLOBAL_ACCESS_TOKEN ?? "",
@@ -65,7 +20,7 @@ export const getAllVoyages = async (locale: string) => {
     environment: process.env.CONTENTFUL_GLOBAL_ENVIRONMENT,
   });
 
-  const voyages = await client.getEntries<ContentfulOverviewVoyage>({
+  const voyages = await client.getEntries<Contentful.Voyage.OverviewRaw>({
     content_type: "voyage",
     "fields.bookable": true,
     "fields.isPastOrCancelled[ne]": true,

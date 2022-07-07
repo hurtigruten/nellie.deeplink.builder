@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { OverviewVoyage } from "../api/getAllVoyages";
 import clsx from "clsx";
 import DeepLinkViewer from "../components/deeplink/DeepLinkViewer";
 import {
@@ -31,8 +30,9 @@ const defaultDeepLink: Deeplink = {
 
 const DeepLinkBuilder = () => {
   const [deeplink, setDeeplink] = useState<Deeplink>(defaultDeepLink);
-  const [voyages, setVoyages] = useState<OverviewVoyage[]>([]);
-  const [chosenVoyage, setChosenVoyage] = useState<OverviewVoyage | null>(null);
+  const [voyages, setVoyages] = useState<Contentful.Voyage.Overview[]>([]);
+  const [chosenVoyage, setChosenVoyage] =
+    useState<Contentful.Voyage.Overview | null>(null);
   const [chosenDeparture, setChosenDeparture] =
     useState<TSelectedDeparture | null>(null);
 
@@ -47,7 +47,7 @@ const DeepLinkBuilder = () => {
     });
   };
 
-  const onVoyageSelected = (voyage: OverviewVoyage) => {
+  const onVoyageSelected = (voyage: Contentful.Voyage.Overview) => {
     setChosenVoyage(voyage);
   };
 

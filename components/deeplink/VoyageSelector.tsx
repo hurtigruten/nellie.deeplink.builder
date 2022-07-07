@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { Hint } from "react-autocomplete-hint";
 import { IHintOption } from "react-autocomplete-hint/dist/src/IHintOption";
-import { OverviewVoyage } from "../../api/getAllVoyages";
 import { mapLocaleToContenfulFormat } from "../../util/mappers";
 import { Status } from "../../constants/status";
 
@@ -13,14 +12,13 @@ const VoyageSelector = ({
   onVoyageSelected,
 }: {
   locale: TLocale;
-  onVoyageSelected: (voyage: OverviewVoyage) => void;
+  onVoyageSelected: (voyage: Contentful.Voyage.Overview) => void;
 }) => {
   const [status, setStatus] = useState(Status.NOT_STARTED);
-  const [voyages, setVoyages] = useState<OverviewVoyage[]>([]);
+  const [voyages, setVoyages] = useState<Contentful.Voyage.Overview[]>([]);
   const [query, setQuery] = useState("");
-  const [guessedVoyage, setGuessedVoyage] = useState<OverviewVoyage | null>(
-    null
-  );
+  const [guessedVoyage, setGuessedVoyage] =
+    useState<Contentful.Voyage.Overview | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const imageRef = useRef<number>();
 
@@ -39,7 +37,7 @@ const VoyageSelector = ({
           "/api/getAllVoyages?locale=" +
             mapLocaleToContenfulFormat(locale ?? "en-au")
         );
-        const voyages_: OverviewVoyage[] = await res.json();
+        const voyages_: Contentful.Voyage.Overview[] = await res.json();
 
         setVoyages(voyages_);
         setStatus(Status.LOADING_SUCCESS);

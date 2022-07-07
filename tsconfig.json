@@ -7,6 +7,57 @@
         "dom.iterable",
         "esnext"
       ],
+      "baseUrl": ".",
+      "paths": {
+        "@api": [
+          "api"
+        ],
+        "@api/*": [
+          "api/*"
+        ],
+        "@components": [
+          "components"
+        ],
+        "@components/*": [
+          "components/*"
+        ],
+        "@constants": [
+          "constants"
+        ],
+        "@constants/*": [
+          "constants/*"
+        ],
+        "@hooks": [
+          "hooks"
+        ],
+        "@hooks/*": [
+          "hooks/*"
+        ],
+        "@icons/*": [
+          "components/icons/*"
+        ],
+        "@pages": [
+          "pages"
+        ],
+        "@pages/*": [
+          "pages/*"
+        ],
+        "@styles": [
+          "styles"
+        ],
+        "@styles/*": [
+          "styles/*"
+        ],
+        "@src/*": [
+          "*"
+        ],
+        "@utils/*": [
+          "utils/*"
+        ],
+        "@utils": [
+          "utils"
+        ],
+      },
       "allowJs": true,
       "skipLibCheck": true,
       "strict": true,

@@ -1,5 +1,5 @@
-import { cachedPgFetch } from "../../util/cachedFetch";
-import { pgFetch, post } from "../../util/http";
+import { cachedPgFetch } from "../util/cachedFetch";
+import { pgFetch, post } from "../util/http";
 
 const { BOOKING_DOMAIN_URL } = process.env;
 

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { OverviewVoyage } from "../../api/getAllVoyages";
 import { Deeplink } from "../../util/deeplink";
 import CheckAvailability from "../availability/CheckAvailability";
 import AddButton from "../inputs/AddButton";
@@ -30,7 +29,7 @@ const DepartureOptions = ({
   onDepartureSelected,
 }: {
   locale: TLocale;
-  voyage: Pick<OverviewVoyage, "packageCodes" | "id">;
+  voyage: Pick<Contentful.Voyage.Overview, "packageCodes" | "id">;
   onDepartureSelected: (departure: TSelectedDeparture | null) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

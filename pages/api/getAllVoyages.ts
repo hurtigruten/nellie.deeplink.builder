@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAllVoyages, OverviewVoyage } from "../../api/getAllVoyages";
+import { getVoyagesFromContentful } from "../../api/getVoyagesFromContentful";
 import pickFirst from "../../util/pickFirst";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<OverviewVoyage[]>
+  res: NextApiResponse<Contentful.Voyage.Overview[]>
 ) {
   const locale = pickFirst(req.query.locale);
-  const voyages = await getAllVoyages(locale);
+  const voyages = await getVoyagesFromContentful(locale);
   res.json(voyages);
 }

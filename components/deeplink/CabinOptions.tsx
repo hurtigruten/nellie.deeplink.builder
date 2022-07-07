@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { OverviewVoyage } from "../../api/getAllVoyages";
 import { Status } from "../../constants/status";
 import { mapLocaleToContenfulFormat } from "../../util/mappers";
 import AddButton from "../inputs/AddButton";

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getAvailability } from "../../../../api/contentful/voyage";
+import { getAvailability } from "../../../../api/voyage";
 
 export default async function handler(
   req: NextApiRequest,
