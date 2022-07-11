@@ -167,8 +167,6 @@ const CabinOptions = ({
         const res = await fetch(`/api/getCabins?${p.toString()}`);
         const cabins = await res.json();
 
-        console.log("loaded cabins!", cabins);
-
         setCabinsByShip(cabins);
         setStatus(Status.LOADING_SUCCESS);
       } catch (e) {
@@ -179,13 +177,7 @@ const CabinOptions = ({
 
     if (!locale) {
       setCabinsByShip([]);
-      console.log(
-        "locale or dep was null, skipping cabin fetch",
-        locale,
-        departure
-      );
     } else {
-      console.log("getting cabins!");
       void loadCabins();
     }
   }, [locale, departure]);
