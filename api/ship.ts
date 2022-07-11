@@ -1,8 +1,8 @@
-import { createClient, Entry } from "contentful";
+import { createClient } from "contentful";
 import { mapLocaleToContenfulFormat } from "../util/mappers";
 
 const mapCabinGrade = (
-  cg: Entry<Contentful.Ship.TRawCabinGrade>
+  cg: Contentful.Entry<Contentful.Ship.TRawCabinGrade>
 ): Contentful.Ship.TCabinGrade => {
   return {
     ...cg.fields,
@@ -13,7 +13,7 @@ const mapCabinGrade = (
 };
 
 const mapCabinCategory = (
-  cc: Entry<Contentful.Ship.TRawCabinCategory>
+  cc: Contentful.Entry<Contentful.Ship.TRawCabinCategory>
 ): Contentful.Ship.TCabinCategory => ({
   category: cc.fields.category.fields,
   cabinGrades: cc.fields.cabinGrades.map(mapCabinGrade),
