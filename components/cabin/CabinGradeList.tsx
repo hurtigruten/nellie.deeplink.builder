@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { breakpoints } from "../../util/breakpoints";
 import { useMediaQuery } from "../../hooks/useMediaQuery";

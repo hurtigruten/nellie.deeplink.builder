@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 16
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Logging into registry
         uses: azure/docker-login@v1
         with:
