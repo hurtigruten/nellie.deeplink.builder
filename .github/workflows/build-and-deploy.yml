@@ -1,0 +1,58 @@
+name: Build & deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.create-image-tag.outputs.result }}
+    steps:
+      - name: Create image tag
+        uses: actions/github-script@v6
+        id: create-image-tag
+        with:
+          script: |
+            const date = new Date().toISOString().substring(0, 19).replace(/[:]/g, '-');
+            const shortSha = context.sha.substring(0, 7);
+            return `${date}-${shortSha}`;
+          result-encoding: string
+      - name: Checking out code
+        uses: actions/checkout@v3
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm install
+      - name: Logging into registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: nelliedev.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Building Docker image
+        run: docker build . -t nelliedev.azurecr.io/hurtigruten/nellie.deeplink.builder:${{steps.create-image-tag.outputs.result}}
+      - name: Pushing Docker image
+        run: docker push nelliedev.azurecr.io/hurtigruten/nellie.deeplink.builder:${{steps.create-image-tag.outputs.result}}
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'nellie-deeplink-builder'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          images: 'nelliedev.azurecr.io/hurtigruten/nellie.deeplink.builder:${{needs.build.outputs.image-tag}}'
