@@ -127,6 +127,7 @@ const CheckAvailability = ({
           setStatus({ status: "SUCCESS", message: undefined });
         }
       } catch (e) {
+        console.error(e);
         if (cancellationRef.current === cancellationToken) {
           if (typeof e === "string") {
             setStatus({ status: "ERROR", message: e });

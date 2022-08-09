@@ -41,8 +41,9 @@ const VoyageSelector = ({
 
         setVoyages(voyages_);
         setStatus(Status.LOADING_SUCCESS);
-      } catch {
+      } catch (e) {
         setStatus(Status.LOADING_FAILED);
+        console.log(e);
         alert("Hmm.. bad things have happened.");
       }
     };

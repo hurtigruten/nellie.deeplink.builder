@@ -73,6 +73,6 @@ export default async function handler(
     res.status(200).json(availableVoyagesWithOfferInfo);
   } catch (error) {
     console.error(error);
-    res.status(500).json("Internal server error");
+    res.status(500).json({ error });
   }
 }
