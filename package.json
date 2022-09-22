@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.12.1",
-    "@reach/accordion": "^0.17.0",
     "@svgr/cli": "^6.2.1",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/line-clamp": "^0.4.0",
@@ -20,9 +19,9 @@
     "next": "12.1.6",
     "node-cache": "^5.1.2",
     "postcss-import": "^14.1.0",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-autocomplete-hint": "^2.0.0",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.2.0",
     "remixicon": "^2.5.0"
   },
   "devDependencies": {
