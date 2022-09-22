@@ -38,9 +38,9 @@ export const getVoyagesFromContentful = async (
       slug: v.fields.slug,
       name: v.fields.name,
       imageUrl: transformImage(
-        v.fields.highlightedImage.fields.image.fields.file.url
+        v.fields?.highlightedImage?.fields.image?.fields.file.url
       ),
-      imageAlt: v.fields.highlightedImage.fields.image.fields.title,
+      imageAlt: v.fields?.highlightedImage?.fields.image?.fields?.title,
       packageCodes: v.fields.bookingCode ?? [],
       departures:
         v.fields?.availability?.fields?.availabilityData?.voyages.map(
