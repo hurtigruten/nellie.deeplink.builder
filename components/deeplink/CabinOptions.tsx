@@ -4,12 +4,6 @@ import { mapLocaleToContenfulFormat } from "../../util/mappers";
 import AddButton from "../inputs/AddButton";
 import Modal from "../Modal";
 import { TSelectedDeparture } from "./DepartureOptions";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-} from "@reach/accordion";
 import IconBullet from "../IconBullet";
 import { ArrowDownSLine, ArrowUpSLine } from "../icons/System";
 import Icon from "../Icon";
@@ -17,6 +11,7 @@ import { Ship2Line } from "../icons/Map";
 import CabinCategoryButton from "../cabin/CabinCategoryButton";
 import CabinGradeList from "../cabin/CabinGradeList";
 import SummaryWithEditDelete from "../SummaryWithEditDelete";
+import Accordion from "../Accordion";
 
 const CabinSelector = ({
   cabinsByShip,
@@ -43,62 +38,50 @@ const CabinSelector = ({
 
   return (
     <div>
-      <Accordion
-        index={openIndex}
-        onChange={handleAccordionItemClick}
-        className="flex flex-col px-4 py-6 bg-white gap-y-4 rounded-5xl tablet:px-8"
-      >
-        {cabinsByShip.map((ship, index) => (
-          <AccordionItem key={ship.name}>
-            <AccordionButton>
-              <div className="flex items-center justify-between">
-                <div className="flex flex-row items-center flex-1 gap-4 tablet:gap-6">
-                  <IconBullet
-                    className="shrink-0"
-                    icon={Ship2Line}
-                    iconColorClassName="text-white"
-                    backgroundColorClassName="bg-black"
-                  />
-                  <p className="mr-4 font-medium text-left body-text-1 tablet:mr-0">
-                    {ship.name}
-                  </p>
-                </div>
-                <Icon
-                  size="2x"
-                  icon={openIndex === index ? ArrowUpSLine : ArrowDownSLine}
-                />
-              </div>
-            </AccordionButton>
-            <AccordionPanel>
-              <div className="flex w-full my-4 ml-16 gap-x-4">
-                {ship.cabinCategories.map((cc) => (
-                  <CabinCategoryButton
-                    isSelected={
-                      selectedCabinCategory?.category.code === cc.category.code
-                    }
-                    onClick={setSelectedCabinCategory}
-                    key={cc.category.code}
-                    cabinCategory={cc}
-                  />
-                ))}
-              </div>
-              {selectedCabinCategory && (
-                <div>
-                  <CabinGradeList
-                    onCabinGradeSelected={(cg) =>
-                      onCabinSelected({
-                        grade: cg,
-                        category: selectedCabinCategory.category,
-                      })
-                    }
-                    cabinCategory={selectedCabinCategory}
-                  />
-                </div>
-              )}
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      {cabinsByShip.map((ship, index) => (
+        <Accordion
+          key={ship.name}
+          header={
+            <>
+              <IconBullet
+                className="shrink-0"
+                icon={Ship2Line}
+                iconColorClassName="text-white"
+                backgroundColorClassName="bg-black"
+              />
+              <p className="mr-4 font-medium text-left body-text-1 tablet:mr-0">
+                {ship.name}
+              </p>
+            </>
+          }
+        >
+          <div className="flex w-full my-4 ml-16 gap-x-4">
+            {ship.cabinCategories.map((cc) => (
+              <CabinCategoryButton
+                isSelected={
+                  selectedCabinCategory?.category.code === cc.category.code
+                }
+                onClick={setSelectedCabinCategory}
+                key={cc.category.code}
+                cabinCategory={cc}
+              />
+            ))}
+          </div>
+          {selectedCabinCategory && (
+            <div>
+              <CabinGradeList
+                onCabinGradeSelected={(cg) =>
+                  onCabinSelected({
+                    grade: cg,
+                    category: selectedCabinCategory.category,
+                  })
+                }
+                cabinCategory={selectedCabinCategory}
+              />
+            </div>
+          )}
+        </Accordion>
+      ))}
     </div>
   );
 };

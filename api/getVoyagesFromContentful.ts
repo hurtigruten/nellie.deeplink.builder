@@ -31,20 +31,18 @@ export const getVoyagesFromContentful = async (
     limit: 500,
   });
 
-  return voyages.items
-    .filter((v) => !!v.fields.highlightedImage.fields.image)
-    .map((v) => ({
-      id: v.sys.id,
-      slug: v.fields.slug,
-      name: v.fields.name,
-      imageUrl: transformImage(
-        v.fields.highlightedImage.fields.image?.fields.file.url
-      ),
-      imageAlt: v.fields.highlightedImage.fields.image?.fields.title,
-      packageCodes: v.fields.bookingCode ?? [],
-      departures:
-        v.fields.availability.fields.availabilityData?.voyages.map(
-          (v) => v.date
-        ) ?? [],
-    }));
+  return voyages.items.map((v) => ({
+    id: v.sys.id,
+    slug: v.fields.slug,
+    name: v.fields.name,
+    imageUrl: transformImage(
+      v.fields.highlightedImage.fields.image.fields.file.url
+    ),
+    imageAlt: v.fields.highlightedImage.fields.image.fields.title,
+    packageCodes: v.fields.bookingCode ?? [],
+    departures:
+      v.fields?.availability?.fields?.availabilityData?.voyages.map(
+        (v) => v.date
+      ) ?? [],
+  }));
 };

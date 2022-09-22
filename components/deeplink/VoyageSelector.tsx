@@ -45,6 +45,7 @@ const VoyageSelector = ({
         setStatus(Status.LOADING_FAILED);
         console.log(e);
         alert("Hmm.. bad things have happened.");
+        console.log(e);
       }
     };
 
