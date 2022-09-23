@@ -21,7 +21,9 @@ const mapCabinCategory = (
 
 export const getCabinCategoriesByShip = async (
   locale: TLocale
-): Promise<Pick<Contentful.Ship.TRootObject, "name" | "cabinCategories">[]> => {
+): Promise<
+  Pick<Contentful.Ship.TRootObject, "code" | "name" | "cabinCategories">[]
+> => {
   const client = createClient({
     space: process.env.CONTENTFUL_GLOBAL_SPACE_ID ?? "",
     accessToken: process.env.CONTENTFUL_GLOBAL_ACCESS_TOKEN ?? "",
@@ -31,13 +33,14 @@ export const getCabinCategoriesByShip = async (
 
   const rawShips = await client.getEntries<Contentful.Ship.TRawRootObject>({
     content_type: "ship",
-    select: "fields.cabinCategories,fields.name",
+    select: "fields.cabinCategories,fields.name,fields.code",
     locale: mapLocaleToContenfulFormat(locale),
     include: 3,
   });
 
   return rawShips.items.map((ship) => ({
     name: ship.fields.name,
+    code: ship.fields.code,
     cabinCategories: ship.fields.cabinCategories.map(mapCabinCategory),
   }));
 };

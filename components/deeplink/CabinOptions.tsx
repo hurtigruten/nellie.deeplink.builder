@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { Status } from "../../constants/status";
-import { mapLocaleToContenfulFormat } from "../../util/mappers";
 import AddButton from "../inputs/AddButton";
 import Modal from "../Modal";
 import { TSelectedDeparture } from "./DepartureOptions";
 import IconBullet from "../IconBullet";
-import { ArrowDownSLine, ArrowUpSLine } from "../icons/System";
-import Icon from "../Icon";
 import { Ship2Line } from "../icons/Map";
 import CabinCategoryButton from "../cabin/CabinCategoryButton";
 import CabinGradeList from "../cabin/CabinGradeList";
@@ -96,14 +93,16 @@ const CabinOptions = ({
   departure,
   locale,
   onCabinsSelected,
+  shipCodesForAvailableShips,
 }: {
   locale: TLocale;
   departure: TSelectedDeparture | null;
   onCabinsSelected: (cabinGrades: string[]) => void;
+  shipCodesForAvailableShips: string[] | null;
 }) => {
   const [status, setStatus] = useState(Status.NOT_STARTED);
   const [cabinsByShip, setCabinsByShip] = useState<
-    Pick<Contentful.Ship.TRootObject, "name" | "cabinCategories">[]
+    Pick<Contentful.Ship.TRootObject, "code" | "name" | "cabinCategories">[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCabins, setSelectedCabins_] = useState<
@@ -144,7 +143,8 @@ const CabinOptions = ({
         setStatus(Status.LOADING_SUCCESS);
       } catch (e) {
         setStatus(Status.LOADING_FAILED);
-        console.log("Hmm.. bad things have happened.");
+        console.error(e);
+        alert("Unable to retrieve cabins.");
       }
     };
 
@@ -189,7 +189,11 @@ const CabinOptions = ({
             onCabinSelected={(cg) => {
               setSelectedCabins([...selectedCabins, cg]);
             }}
-            cabinsByShip={cabinsByShip}
+            cabinsByShip={cabinsByShip.filter(
+              ({ code }) =>
+                !shipCodesForAvailableShips ||
+                shipCodesForAvailableShips.includes(code)
+            )}
           />
         </>
       </Modal>
