@@ -49,6 +49,15 @@ const DeepLinkBuilder = () => {
 
   const onVoyageSelected = (voyage: Contentful.Voyage.Overview) => {
     setChosenVoyage(voyage);
+    setDeeplink({
+      ...deeplink,
+      search: {
+        voyageId: voyage.id,
+        cabins: [],
+        promoCode: null,
+        departure: null,
+      },
+    });
   };
 
   const onCabinsSelected = (cabinGrades: string[]) => {
@@ -67,9 +76,6 @@ const DeepLinkBuilder = () => {
   };
 
   const onDepartureSelected = (selectedDep: TSelectedDeparture | null) => {
-    console.log("quoteId", selectedDep?.departure.quoteId);
-    console.log("voyageId", selectedDep?.departure.voyageId);
-
     const promoCode =
       selectedDep?.departure.promotionCodesApplied.join(",") ?? null;
     const departure =
@@ -95,7 +101,7 @@ const DeepLinkBuilder = () => {
       <header className="flex items-center justify-center p-6 mb-20 bg-off-black py-14">
         <h1 className="text-white uppercase display-text">Create deeplink</h1>
       </header>
-      <main className="relative flex flex-col w-full pl-20 overflow-hidden gap-y-5">
+      <main className="relative flex flex-col w-full pl-20 mb-20 overflow-hidden gap-y-5">
         <LocaleSelector onLocaleSelected={onLocaleSelected} />
         {deeplink?.locale && (
           <div>

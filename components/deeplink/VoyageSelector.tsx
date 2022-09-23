@@ -43,9 +43,8 @@ const VoyageSelector = ({
         setStatus(Status.LOADING_SUCCESS);
       } catch (e) {
         setStatus(Status.LOADING_FAILED);
-        console.log(e);
-        alert("Hmm.. bad things have happened.");
-        console.log(e);
+        alert("Unable to load voyages from Contentful.");
+        console.error(e);
       }
     };
 
@@ -103,6 +102,10 @@ const VoyageSelector = ({
     ...voyages.map((v) => ({
       id: v.id,
       label: ":" + v.id,
+    })),
+    ...voyages.map((v) => ({
+      id: v.id,
+      label: "~" + v.packageCodes.join(","),
     })),
   ];
 
@@ -163,7 +166,6 @@ const VoyageSelector = ({
           onFill={(h) => {
             if (typeof h === "undefined" || typeof h === "string") {
               throw new Error("Unexpected hint type received");
-              return;
             }
 
             onHintFill(h);

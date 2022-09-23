@@ -69,7 +69,6 @@ export default async function handler(
     const availableVoyagesWithOfferInfo = await Promise.all(
       availableVoyagesWithOfferInfoPromises
     );
-
     res.status(200).json(availableVoyagesWithOfferInfo);
   } catch (error) {
     console.error(error);

@@ -1,5 +1,6 @@
 import { cachedPgFetch } from "../util/cachedFetch";
 import { pgFetch, post } from "../util/http";
+import { addDays, subDays } from "date-fns";
 
 const { BOOKING_DOMAIN_URL } = process.env;
 
@@ -29,8 +30,8 @@ const getPackageTask = (
 ) => {
   const sortedDates = availability.dates.sort();
 
-  const fromDate = new Date(sortedDates[0]);
-  const toDate = new Date(sortedDates[sortedDates.length - 1]).toISOString();
+  const fromDate = subDays(new Date(sortedDates.at(0) ?? ""), 1).toISOString();
+  const toDate = addDays(new Date(sortedDates.at(-1) ?? ""), 1).toISOString();
 
   const cabinPassengers: PG.Request.Package.TCabin[] | null =
     cabins?.map((cabin) => {
@@ -58,7 +59,7 @@ const getPackageTask = (
     packageCode: code,
     availabilityDates: {
       dateRange: {
-        fromDate: fromDate.toISOString(),
+        fromDate,
         toDate,
       },
     },
@@ -75,7 +76,7 @@ const getPackageTask = (
     currency,
     bookingSource: "B2C",
     secondaryBookingSource: "NELLIE",
-    closedPromotionCode: promotionCode,
+    ...(promotionCode ? { closedPromotionCode: promotionCode } : {}),
   };
 
   if (useCache) {
@@ -125,6 +126,15 @@ const mapPackageVoyages = (
   { code, packageItinerary }: PG.TPackage,
   { quoteId, calendar }: PG.TPackageSearchResult
 ): PG.TPackageVoyage[] => {
+  const vv = calendar.filter(({ packageVoyageOptions }) =>
+    packageVoyageOptions?.some(
+      ({ availabilityResult }) => availabilityResult?.code === "AVAILABLE"
+    )
+  );
+
+  console.log("through filter", vv);
+  console.log(calendar.flatMap((c) => c.packageVoyageOptions));
+
   const voyages = calendar
     .filter(({ packageVoyageOptions }) =>
       packageVoyageOptions?.some(
@@ -180,6 +190,8 @@ export const getAvailability = async ({
     filterPackagesByDate
   );
 
+  // console.log(packageList);
+
   const packageTasks = packageList.map((packageCode) =>
     getPackageTask(
       marketId,
@@ -193,9 +205,13 @@ export const getAvailability = async ({
 
   const packages = await Promise.all(packageTasks);
 
+  console.log(JSON.stringify(packages));
+
   const packageVoyages = packageList.flatMap((packageSearch, index) =>
     mapPackageVoyages(packageSearch, packages[index])
   );
+
+  console.log(packageVoyages);
 
   return packageVoyages;
 };
