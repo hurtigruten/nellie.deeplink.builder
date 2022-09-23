@@ -23,36 +23,26 @@ const CabinSelector = ({
   }) => void;
   cabinsByShip: Pick<Contentful.Ship.TRootObject, "name" | "cabinCategories">[];
 }) => {
-  const [openIndex, setOpenIndex] = useState<number>(-1);
   const [selectedCabinCategory, setSelectedCabinCategory] =
     useState<Contentful.Ship.TCabinCategory | null>(null);
 
-  const handleAccordionItemClick = (value: number | undefined) => {
-    if (value !== undefined && value !== openIndex) {
-      setSelectedCabinCategory(null);
-      setOpenIndex(value);
-    } else {
-      setOpenIndex(-1);
-    }
-  };
-
   return (
     <div>
-      {cabinsByShip.map((ship, index) => (
+      {cabinsByShip.map((ship) => (
         <Accordion
           key={ship.name}
           header={
-            <>
+            <div className="flex items-center gap-x-2">
               <IconBullet
                 className="shrink-0"
                 icon={Ship2Line}
                 iconColorClassName="text-white"
                 backgroundColorClassName="bg-black"
               />
-              <p className="mr-4 font-medium text-left body-text-1 tablet:mr-0">
+              <p className="mb-1 mr-4 font-medium text-left body-text-1 tablet:mr-0">
                 {ship.name}
               </p>
-            </>
+            </div>
           }
         >
           <div className="flex w-full my-4 ml-16 gap-x-4">

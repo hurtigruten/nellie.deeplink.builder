@@ -123,7 +123,7 @@ const CheckAvailability = ({
             toDeparture(x)
           );
           setDepartureDates(departures);
-
+          console.log("welp yay", data);
           setStatus({ status: "SUCCESS", message: undefined });
         }
       } catch (e) {
