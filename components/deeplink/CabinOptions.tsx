@@ -24,7 +24,7 @@ const CabinSelector = ({
     useState<Contentful.Ship.TCabinCategory | null>(null);
 
   return (
-    <div>
+    <div className="w-full">
       {cabinsByShip.map((ship) => (
         <Accordion
           key={ship.name}
@@ -42,7 +42,7 @@ const CabinSelector = ({
             </div>
           }
         >
-          <div className="flex w-full my-4 ml-16 gap-x-4">
+          <div className="flex w-full my-4 gap-x-4">
             {ship.cabinCategories.map((cc) => (
               <CabinCategoryButton
                 isSelected={
@@ -154,6 +154,8 @@ const CabinOptions = ({
       void loadCabins();
     }
   }, [locale, departure]);
+
+  console.log(shipCodesForAvailableShips, cabinsByShip);
 
   return (
     <>

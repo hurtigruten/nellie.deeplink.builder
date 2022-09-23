@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Deeplink } from "../../util/deeplink";
-import Icon from "../Icon";
 import IconButton from "../IconButton";
 import { ClipboardLine } from "../icons/Document";
 import { ButtonModes } from "../inputs/Button";
@@ -26,7 +25,7 @@ const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
     return <h2>No deeplink supplied.</h2>;
   }
 
-  const baseUrl = `http://localhost:3000/${deeplink.locale}/expeditions/dl/`;
+  const baseUrl = `http://www.hurtigruten.com/${deeplink.locale}/expeditions/dl/`;
 
   return (
     <div className="w-[400px] flex gap-2 items-center">
