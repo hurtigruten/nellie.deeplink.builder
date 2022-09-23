@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { Status } from "../../constants/status";
-import { mapLocaleToContenfulFormat } from "../../util/mappers";
 import AddButton from "../inputs/AddButton";
 import Modal from "../Modal";
 import { TSelectedDeparture } from "./DepartureOptions";
 import IconBullet from "../IconBullet";
-import { ArrowDownSLine, ArrowUpSLine } from "../icons/System";
-import Icon from "../Icon";
 import { Ship2Line } from "../icons/Map";
 import CabinCategoryButton from "../cabin/CabinCategoryButton";
 import CabinGradeList from "../cabin/CabinGradeList";
@@ -144,7 +141,8 @@ const CabinOptions = ({
         setStatus(Status.LOADING_SUCCESS);
       } catch (e) {
         setStatus(Status.LOADING_FAILED);
-        console.log("Hmm.. bad things have happened.");
+        console.error(e);
+        console.log("Unable to retrieve cabins.");
       }
     };
 

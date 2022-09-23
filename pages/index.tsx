@@ -1,24 +1,13 @@
 import { useState } from "react";
-import clsx from "clsx";
 import DeepLinkViewer from "../components/deeplink/DeepLinkViewer";
-import {
-  mapContentfulLanguageToLocale,
-  mapLocaleToContenfulFormat,
-} from "../util/mappers";
-import AddButton from "../components/inputs/AddButton";
-import {
-  Deeplink,
-  DeeplinkSearchCabin,
-  encodeDeeplink,
-} from "../util/deeplink";
+import { mapContentfulLanguageToLocale } from "../util/mappers";
+import { Deeplink, DeeplinkSearchCabin } from "../util/deeplink";
 import VoyageSelector from "../components/deeplink/VoyageSelector";
 import LocaleSelector from "../components/deeplink/LocaleSelector";
 import DepartureOptions, {
   TSelectedDeparture,
 } from "../components/deeplink/DepartureOptions";
 import CabinOptions from "../components/deeplink/CabinOptions";
-import Button, { ButtonModes } from "../components/inputs/Button";
-import IconButton from "../components/IconButton";
 
 const defaultDeepLink: Deeplink = {
   version: "1",

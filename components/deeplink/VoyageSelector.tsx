@@ -43,7 +43,7 @@ const VoyageSelector = ({
         setStatus(Status.LOADING_SUCCESS);
       } catch (e) {
         setStatus(Status.LOADING_FAILED);
-        alert("Unable to load voyages from Contentful.");
+        alert("Unable to retrieve voyages from Contentful.");
         console.error(e);
       }
     };
