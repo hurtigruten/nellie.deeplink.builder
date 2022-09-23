@@ -153,7 +153,7 @@ declare namespace Contentful.Ship {
     // images: TShipImage[];
     // deckPlans: TDeckPlan[];
     cabinCategories: Entry<TRawCabinCategory>[];
-    // code: string;
+    code: string;
     // slug: string;
     // contentSection: TContentSection[];
     // facilities: string[];

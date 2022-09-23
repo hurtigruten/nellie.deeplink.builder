@@ -24,6 +24,9 @@ const DeepLinkBuilder = () => {
     useState<Contentful.Voyage.Overview | null>(null);
   const [chosenDeparture, setChosenDeparture] =
     useState<TSelectedDeparture | null>(null);
+  const [shipCodesForAvailableShips, setShipCodesForAvailableShips] = useState<
+    string[] | null
+  >(null);
 
   const onLocaleSelected = (locale: string) => {
     setDeeplink({
@@ -38,6 +41,8 @@ const DeepLinkBuilder = () => {
 
   const onVoyageSelected = (voyage: Contentful.Voyage.Overview) => {
     setChosenVoyage(voyage);
+    setShipCodesForAvailableShips(voyage.shipCodes);
+
     setDeeplink({
       ...deeplink,
       search: {
@@ -72,6 +77,9 @@ const DeepLinkBuilder = () => {
     const cabins: DeeplinkSearchCabin[] =
       selectedDep?.passengers.map((p) => [p.adults, p.children, p.infants]) ??
       [];
+
+    const shipCode = selectedDep?.departure.shipCode;
+    setShipCodesForAvailableShips(shipCode ? [shipCode] : null);
 
     setChosenDeparture(selectedDep);
     setDeeplink({
@@ -109,6 +117,7 @@ const DeepLinkBuilder = () => {
                 onDepartureSelected={onDepartureSelected}
               />
               <CabinOptions
+                shipCodesForAvailableShips={shipCodesForAvailableShips}
                 locale={deeplink.locale}
                 departure={chosenDeparture}
                 onCabinsSelected={onCabinsSelected}

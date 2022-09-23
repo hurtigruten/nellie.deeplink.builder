@@ -1,5 +1,7 @@
 import { createClient } from "contentful";
 
+import { notEmpty } from "@src/util/notEmpty";
+
 const transformImage = (src: string) => {
   const parts = src.split("?");
   let out = "http:" + parts[0];
@@ -25,18 +27,22 @@ export const getVoyagesFromContentful = async (
     "fields.bookable": true,
     "fields.isPastOrCancelled[ne]": true,
     select:
-      "sys.id,fields.slug,fields.name,fields.highlightedImage,fields.availability,fields.bookingCode",
+      "sys.id,fields.slug,fields.name,fields.highlightedImage,fields.availability,fields.bookingCode,fields.ships",
     include: 2,
     locale,
-    limit: 500,
+    limit: 800,
   });
 
   return voyages.items
-    .filter((v) => !!v.fields.highlightedImage.fields.image)
+    .filter(
+      (v) => !!v.fields.highlightedImage.fields.image && !!v.fields.bookingCode
+    )
     .map((v) => ({
       id: v.sys.id,
       slug: v.fields.slug,
       name: v.fields.name,
+      shipCodes:
+        v.fields.ships?.map((s) => s?.fields?.code).filter(notEmpty) ?? [],
       imageUrl: transformImage(
         v.fields?.highlightedImage?.fields.image?.fields.file.url
       ),

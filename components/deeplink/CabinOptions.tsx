@@ -93,14 +93,16 @@ const CabinOptions = ({
   departure,
   locale,
   onCabinsSelected,
+  shipCodesForAvailableShips,
 }: {
   locale: TLocale;
   departure: TSelectedDeparture | null;
   onCabinsSelected: (cabinGrades: string[]) => void;
+  shipCodesForAvailableShips: string[] | null;
 }) => {
   const [status, setStatus] = useState(Status.NOT_STARTED);
   const [cabinsByShip, setCabinsByShip] = useState<
-    Pick<Contentful.Ship.TRootObject, "name" | "cabinCategories">[]
+    Pick<Contentful.Ship.TRootObject, "code" | "name" | "cabinCategories">[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCabins, setSelectedCabins_] = useState<
@@ -187,7 +189,11 @@ const CabinOptions = ({
             onCabinSelected={(cg) => {
               setSelectedCabins([...selectedCabins, cg]);
             }}
-            cabinsByShip={cabinsByShip}
+            cabinsByShip={cabinsByShip.filter(
+              ({ code }) =>
+                !shipCodesForAvailableShips ||
+                shipCodesForAvailableShips.includes(code)
+            )}
           />
         </>
       </Modal>
