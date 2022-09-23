@@ -143,7 +143,6 @@ const VoyageSelector = ({
               <Image
                 layout="fill"
                 onLoadingComplete={() => {
-                  console.log("imageloaded");
                   setImageLoaded(true);
                 }}
                 src={guessedVoyage.imageUrl}

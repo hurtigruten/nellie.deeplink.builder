@@ -142,7 +142,7 @@ const CabinOptions = ({
       } catch (e) {
         setStatus(Status.LOADING_FAILED);
         console.error(e);
-        console.log("Unable to retrieve cabins.");
+        alert("Unable to retrieve cabins.");
       }
     };
 

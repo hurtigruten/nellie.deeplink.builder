@@ -132,9 +132,6 @@ const mapPackageVoyages = (
     )
   );
 
-  console.log("through filter", vv);
-  console.log(calendar.flatMap((c) => c.packageVoyageOptions));
-
   const voyages = calendar
     .filter(({ packageVoyageOptions }) =>
       packageVoyageOptions?.some(
@@ -190,8 +187,6 @@ export const getAvailability = async ({
     filterPackagesByDate
   );
 
-  // console.log(packageList);
-
   const packageTasks = packageList.map((packageCode) =>
     getPackageTask(
       marketId,
@@ -205,13 +200,9 @@ export const getAvailability = async ({
 
   const packages = await Promise.all(packageTasks);
 
-  console.log(JSON.stringify(packages));
-
   const packageVoyages = packageList.flatMap((packageSearch, index) =>
     mapPackageVoyages(packageSearch, packages[index])
   );
-
-  console.log(packageVoyages);
 
   return packageVoyages;
 };
