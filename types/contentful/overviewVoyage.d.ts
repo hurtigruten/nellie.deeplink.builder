@@ -1,6 +1,4 @@
 declare namespace Contentful.Voyage {
-  declare type Entry = import("contentful").Entry;
-
   type ShipRaw = Entry<{ name: string; code: string }>;
   type OverviewRaw = {
     id: string;
