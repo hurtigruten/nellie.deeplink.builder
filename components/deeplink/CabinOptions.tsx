@@ -155,8 +155,6 @@ const CabinOptions = ({
     }
   }, [locale, departure]);
 
-  console.log(shipCodesForAvailableShips, cabinsByShip);
-
   return (
     <>
       {!!selectedCabins.length && (
