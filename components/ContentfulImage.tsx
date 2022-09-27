@@ -64,7 +64,7 @@ const ContentfulImage = ({
     ...rest,
     placeholder,
     blurDataURL,
-    src: typeof src === "string" && src.startsWith("//") ? `http:${src}` : src,
+    src: typeof src === "string" && src.startsWith("//") ? `https:${src}` : src,
     alt,
     loader: (props: IContentfulImageLoaderProps) =>
       contentfulImageLoader({
