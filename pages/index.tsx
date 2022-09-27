@@ -117,16 +117,16 @@ const DeepLinkBuilder = () => {
             : null,
         }
       : null,
-    cabins: chosenCabins?.map((cabin, cabinIndex) => ({
-      numberOfTravellers: chosenDeparture?.passengers?.[cabinIndex]
-        ? sumPassengersInCabin(chosenDeparture.passengers[cabinIndex])
-        : null,
-      name: cabin.grade.name,
-      code: cabin.grade.code,
-      category: cabin.category.name,
-      number: null,
-      imageSrc: cabin.grade.media?.[0].file.url,
-    })),
+    cabins:
+      chosenCabins?.map((cabin, cabinIndex) => ({
+        numberOfTravellers: chosenDeparture?.passengers?.[cabinIndex]
+          ? sumPassengersInCabin(chosenDeparture.passengers[cabinIndex])
+          : null,
+        name: cabin.grade.name,
+        code: cabin.grade.code,
+        category: cabin.category.name,
+        imageSrc: cabin.grade.media?.[0].file.url,
+      })) ?? null,
   };
 
   return (
