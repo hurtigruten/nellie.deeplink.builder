@@ -43,6 +43,8 @@ export const getVoyagesFromContentful = async (
       name: v.fields.name,
       shipCodes:
         v.fields.ships?.map((s) => s?.fields?.code).filter(notEmpty) ?? [],
+      shipNames:
+        v.fields.ships?.map((s) => s?.fields?.name).filter(notEmpty) ?? [],
       imageUrl: transformImage(
         v.fields?.highlightedImage?.fields.image?.fields.file.url
       ),

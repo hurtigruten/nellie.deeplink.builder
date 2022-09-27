@@ -8,6 +8,8 @@ import DepartureOptions, {
   TSelectedDeparture,
 } from "../components/deeplink/DepartureOptions";
 import CabinOptions from "../components/deeplink/CabinOptions";
+import Summary from "@components/Summary";
+import { sumPassengersInCabin } from "@src/util/sumPassengersInCabin";
 
 const defaultDeepLink: Deeplink = {
   version: "1",
@@ -20,6 +22,9 @@ const defaultDeepLink: Deeplink = {
 const DeepLinkBuilder = () => {
   const [deeplink, setDeeplink] = useState<Deeplink>(defaultDeepLink);
   const [voyages, setVoyages] = useState<Contentful.Voyage.Overview[]>([]);
+  const [chosenCabins, setChosenCabins] = useState<
+    Contentful.Cabin.TRootObject[] | null
+  >(null);
   const [chosenVoyage, setChosenVoyage] =
     useState<Contentful.Voyage.Overview | null>(null);
   const [chosenDeparture, setChosenDeparture] =
@@ -54,15 +59,16 @@ const DeepLinkBuilder = () => {
     });
   };
 
-  const onCabinsSelected = (cabinGrades: string[]) => {
+  const onCabinsSelected = (cabins_: Contentful.Cabin.TRootObject[]) => {
     const cabins =
-      cabinGrades.length === 0
+      cabins_.length === 0
         ? undefined
-        : cabinGrades.map((cg) => ({
-            cabinGradeCode: cg,
+        : cabins_.map((cg) => ({
+            cabinGradeCode: cg.grade.code,
             cabinNumber: null,
           }));
 
+    setChosenCabins(cabins_);
     setDeeplink({
       ...deeplink,
       cabins,
@@ -93,41 +99,74 @@ const DeepLinkBuilder = () => {
     });
   };
 
+  const summary = {
+    departureDate: chosenDeparture
+      ? new Date(chosenDeparture.departure.date)
+      : null,
+    duration: chosenDeparture ? chosenDeparture.departure.duration : null,
+    shipName: chosenVoyage?.shipNames.join(", ") ?? null,
+    voyage: chosenVoyage
+      ? {
+          name: chosenVoyage.name,
+          imageSrc: chosenVoyage.imageUrl,
+          numberOfTravellers: chosenDeparture
+            ? chosenDeparture.passengers.reduce(
+                (total, p) => total + p.adults + p.children + p.infants,
+                0
+              )
+            : null,
+        }
+      : null,
+    cabins: chosenCabins?.map((cabin, cabinIndex) => ({
+      numberOfTravellers: chosenDeparture?.passengers?.[cabinIndex]
+        ? sumPassengersInCabin(chosenDeparture.passengers[cabinIndex])
+        : null,
+      name: cabin.grade.name,
+      code: cabin.grade.code,
+      category: cabin.category.name,
+      number: null,
+      imageSrc: cabin.grade.media?.[0].file.url,
+    })),
+  };
+
   return (
     <>
       <header className="flex items-center justify-center p-6 mb-20 bg-off-black py-14">
         <h1 className="text-white uppercase display-text">Create deeplink</h1>
       </header>
-      <main className="relative flex flex-col w-full pl-20 mb-20 overflow-hidden gap-y-5">
-        <LocaleSelector onLocaleSelected={onLocaleSelected} />
-        {deeplink?.locale && (
-          <div>
-            <VoyageSelector
-              onVoyageSelected={onVoyageSelected}
-              locale={deeplink.locale}
-            />
-          </div>
-        )}
-        <div className="flex gap-2">
-          {deeplink.locale && chosenVoyage && (
-            <div className="flex flex-wrap gap-4">
-              <DepartureOptions
+      <main className="flex w-full mr-20 gap-x-10">
+        <div className="relative flex flex-col pl-20 mb-20 overflow-hidden gap-y-5">
+          <LocaleSelector onLocaleSelected={onLocaleSelected} />
+          {deeplink?.locale && (
+            <div>
+              <VoyageSelector
+                onVoyageSelected={onVoyageSelected}
                 locale={deeplink.locale}
-                voyage={chosenVoyage}
-                onDepartureSelected={onDepartureSelected}
-              />
-              <CabinOptions
-                shipCodesForAvailableShips={shipCodesForAvailableShips}
-                locale={deeplink.locale}
-                departure={chosenDeparture}
-                onCabinsSelected={onCabinsSelected}
               />
             </div>
           )}
+          <div className="flex gap-2">
+            {deeplink.locale && chosenVoyage && (
+              <div className="flex flex-wrap gap-4">
+                <DepartureOptions
+                  locale={deeplink.locale}
+                  voyage={chosenVoyage}
+                  onDepartureSelected={onDepartureSelected}
+                />
+                <CabinOptions
+                  shipCodesForAvailableShips={shipCodesForAvailableShips}
+                  locale={deeplink.locale}
+                  departure={chosenDeparture}
+                  onCabinsSelected={onCabinsSelected}
+                />
+              </div>
+            )}
+          </div>
+          {(deeplink.search || deeplink.cabins) && (
+            <DeepLinkViewer deeplink={deeplink} />
+          )}
         </div>
-        {(deeplink.search || deeplink.cabins) && (
-          <DeepLinkViewer deeplink={deeplink} />
-        )}
+        <Summary {...summary} />
       </main>
     </>
   );
