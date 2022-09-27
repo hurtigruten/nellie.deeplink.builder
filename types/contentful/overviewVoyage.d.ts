@@ -39,5 +39,6 @@ declare namespace Contentful.Voyage {
     departures: string[];
     packageCodes: string[];
     shipCodes: string[];
+    shipNames: string[];
   };
 }

@@ -28,7 +28,7 @@ const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
   const baseUrl = `http://www.hurtigruten.com/${deeplink.locale}/expeditions/dl/`;
 
   return (
-    <div className="w-[400px] flex gap-2 items-center">
+    <div className="flex items-center gap-2">
       <h2 className="max-w-[400px] whitespace-nowrap mb-4">Your deeplink</h2>
       <TextInput
         className="min-w-[550px]"

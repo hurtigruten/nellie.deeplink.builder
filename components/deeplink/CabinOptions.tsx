@@ -14,10 +14,7 @@ const CabinSelector = ({
   cabinsByShip,
   onCabinSelected,
 }: {
-  onCabinSelected: (gradeAndCategory: {
-    grade: Contentful.Ship.TCabinGrade;
-    category: Contentful.Ship.TCategory;
-  }) => void;
+  onCabinSelected: (gradeAndCategory: Contentful.Cabin.TRootObject) => void;
   cabinsByShip: Pick<Contentful.Ship.TRootObject, "name" | "cabinCategories">[];
 }) => {
   const [selectedCabinCategory, setSelectedCabinCategory] =
@@ -97,7 +94,7 @@ const CabinOptions = ({
 }: {
   locale: TLocale;
   departure: TSelectedDeparture | null;
-  onCabinsSelected: (cabinGrades: string[]) => void;
+  onCabinsSelected: (cabins: Contentful.Cabin.TRootObject[]) => void;
   shipCodesForAvailableShips: string[] | null;
 }) => {
   const [status, setStatus] = useState(Status.NOT_STARTED);
@@ -106,20 +103,12 @@ const CabinOptions = ({
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCabins, setSelectedCabins_] = useState<
-    {
-      grade: Contentful.Ship.TCabinGrade;
-      category: Contentful.Ship.TCategory;
-    }[]
+    Contentful.Cabin.TRootObject[]
   >([]);
 
-  const setSelectedCabins = (
-    cabins: {
-      grade: Contentful.Ship.TCabinGrade;
-      category: Contentful.Ship.TCategory;
-    }[]
-  ) => {
+  const setSelectedCabins = (cabins: Contentful.Cabin.TRootObject[]) => {
     setSelectedCabins_(cabins);
-    onCabinsSelected(cabins.map((c) => c.grade.code));
+    onCabinsSelected(cabins);
   };
 
   useEffect(() => {
