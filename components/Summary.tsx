@@ -1,4 +1,5 @@
 import dateToString from "@src/util/dateToString";
+import Image from "next/image";
 import ContentfulImage from "./ContentfulImage";
 
 type SummaryProps = {
