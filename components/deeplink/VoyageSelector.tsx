@@ -6,6 +6,7 @@ import { Hint } from "react-autocomplete-hint";
 import { IHintOption } from "react-autocomplete-hint/dist/src/IHintOption";
 import { mapLocaleToContenfulFormat } from "../../util/mappers";
 import { Status } from "../../constants/status";
+import ContentfulImage from "@components/ContentfulImage";
 
 const VoyageSelector = ({
   locale,
@@ -140,8 +141,9 @@ const VoyageSelector = ({
                 }
               )}
             >
-              <Image
+              <ContentfulImage
                 layout="fill"
+                objectFit="cover"
                 onLoadingComplete={() => {
                   setImageLoaded(true);
                 }}
