@@ -13,9 +13,8 @@ type SummaryProps = {
   cabins:
     | null
     | {
-        numberOfTravellers: number;
+        numberOfTravellers: number | null;
         name: string;
-        number: number;
         imageSrc: string;
         category: string;
         code: string;
