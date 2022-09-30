@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Deeplink } from "../../util/deeplink";
 import IconButton from "../IconButton";
 import { ClipboardLine } from "../icons/Document";
-import { ButtonModes } from "../inputs/Button";
+import Button, { ButtonModes } from "../inputs/Button";
 import TextInput from "../inputs/TextInput";
 
 const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
@@ -28,23 +28,25 @@ const DeepLinkViewer = ({ deeplink }: { deeplink: Deeplink | null }) => {
   const baseUrl = `http://www.hurtigruten.com/${deeplink.locale}/expeditions/dl/`;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col">
       <h2 className="max-w-[400px] whitespace-nowrap mb-4">Your deeplink</h2>
-      <TextInput
-        className="min-w-[550px]"
-        value={`${baseUrl}${encodedLink}`}
-        disabled
-      />
-      <IconButton
-        buttonColor="transparent"
-        size="large"
-        title="copy"
-        mode={ButtonModes.flat}
-        icon={ClipboardLine}
-        onClick={() =>
-          navigator.clipboard.writeText(`${baseUrl}${encodedLink}`)
-        }
-      />
+      <div className="flex items-center gap-2">
+        <TextInput
+          className="min-w-[550px]"
+          value={`${baseUrl}${encodedLink}`}
+          disabled
+        />
+        <IconButton
+          buttonColor="transparent"
+          size="large"
+          title="copy"
+          mode={ButtonModes.flat}
+          icon={ClipboardLine}
+          onClick={() =>
+            navigator.clipboard.writeText(`${baseUrl}${encodedLink}`)
+          }
+        />
+      </div>
     </div>
   );
 };
