@@ -10,6 +10,7 @@ import DepartureOptions, {
 import CabinOptions from "../components/deeplink/CabinOptions";
 import Summary from "@components/Summary";
 import { sumPassengersInCabin } from "@src/util/sumPassengersInCabin";
+import Button from "@components/inputs/Button";
 
 const defaultDeepLink: Deeplink = {
   version: "1",
@@ -32,6 +33,8 @@ const DeepLinkBuilder = () => {
   const [shipCodesForAvailableShips, setShipCodesForAvailableShips] = useState<
     string[] | null
   >(null);
+  const [isDeletingQuote, setIsDeletingQuote] = useState(false);
+  const [deletedQuoteIds, setDeletedQuoteIds] = useState<string[]>([]);
 
   const onLocaleSelected = (locale: string) => {
     setDeeplink({
@@ -97,6 +100,11 @@ const DeepLinkBuilder = () => {
         departure,
       },
     });
+
+    console.log(
+      selectedDep?.departure.quoteId,
+      selectedDep?.departure.voyageId
+    );
   };
 
   const summary = {
@@ -129,8 +137,31 @@ const DeepLinkBuilder = () => {
       })) ?? null,
   };
 
+  const deleteQuoteHandler = async () => {
+    setIsDeletingQuote(true);
+    try {
+      await fetch(
+        `/api/booking-domain/delete-quote?quoteId=${
+          chosenDeparture?.departure.quoteId ?? ""
+        }`
+      );
+      setDeletedQuoteIds([
+        ...deletedQuoteIds,
+        chosenDeparture?.departure.quoteId ?? "",
+      ]);
+    } catch (e) {
+      console.log("Failed to delete quote", e);
+    } finally {
+      setIsDeletingQuote(false);
+    }
+  };
+
   return (
     <>
+      <div className="hidden" id="--quoteid">
+        {chosenDeparture?.departure.quoteId}
+        {chosenDeparture?.departure.voyageId}
+      </div>
       <header className="flex items-center justify-center p-6 mb-20 bg-off-black py-14">
         <h1 className="text-white uppercase display-text">Create deeplink</h1>
       </header>
@@ -165,6 +196,12 @@ const DeepLinkBuilder = () => {
           {(deeplink.search || deeplink.cabins) && (
             <DeepLinkViewer deeplink={deeplink} />
           )}
+          {chosenDeparture?.departure.quoteId &&
+            !deletedQuoteIds.includes(chosenDeparture.departure.quoteId) && (
+              <Button isLoading={isDeletingQuote} onClick={deleteQuoteHandler}>
+                Delete quote
+              </Button>
+            )}
         </div>
         <Summary {...summary} />
       </main>
